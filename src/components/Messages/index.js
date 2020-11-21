@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableWithoutFeedback } from 'react-native';
 import styles from './styles'
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native'
 
 const getContactList = () => {
     return [
@@ -9,41 +10,51 @@ const getContactList = () => {
             userId: 16,
             userName: 'Pedrito',
             userPhoto: 'https://upload.wikimedia.org/wikipedia/commons/8/82/Santiago_Cervera_Profile_Pic.jpg',
-            userMessage: 'Hello my frined!',
-            messageHour: '14:55'
+            userMessage: 'Hello my friend!',
+            messageHour: '14:55',
+            gender: 'Male',
+            country: 'Germany'
         },
         {
             userId: 23,
             userName: 'Sofia Louren',
             userPhoto: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Aebh_Kelly_Profile_Picture1.png',
             userMessage: 'And then?',
-            messageHour: '15:25'
+            messageHour: '15:25',
+            gender: 'Female',
+            country: 'Australia'
         },
         {
             userId: 31,
             userName: 'Juan S.',
             userPhoto: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Scott_Morrison_2014_crop.jpg',
             userMessage: 'Maybe.',
-            messageHour: '15:35'
+            messageHour: '15:35',
+            gender: 'Male',
+            country: 'Ireland'
         },
         {
             userId: 54,
             userName: 'Little Star',
             userPhoto: 'https://upload.wikimedia.org/wikipedia/commons/b/ba/Karolina_Lipowska_profile_photo_from_2017.jpg',
             userMessage: 'Not really!',
-            messageHour: '16:32'
+            messageHour: '16:32',
+            gender: 'Female',
+            country: 'Texas'
         }
     ]
 }
 
 const Messages = () => {
-    const [ user, setUser ]= useState('');
-    const [ message, setMessage ]= useState('');
+    const navigation = useNavigation();
+
+    const [user, setUser] = useState('');
+    const [message, setMessage] = useState('');
     return (
 
         <View style={styles.principal}>
-            <View style={ styles.appWelcome }>
-                <Text style={ styles.appText }>
+            <View style={styles.appWelcome}>
+                <Text style={styles.appText}>
                     Chatinger
                 </Text>
             </View>
@@ -51,7 +62,8 @@ const Messages = () => {
                 getContactList().map(item => (
                     <TouchableHighlight key={item.userId} onPress={() => {
                         setUser(item.userName);
-                        setMessage(item.userMessage)
+                        setMessage(item.userMessage);
+                        navigation.navigate("Chat", item);
                     }}>
                         <View style={styles.container} key={item.userId}>
                             <View style={styles.flowInfo}>
@@ -81,5 +93,4 @@ const Messages = () => {
         </View>
     );
 }
-
 export default Messages;

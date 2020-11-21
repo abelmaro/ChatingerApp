@@ -3,6 +3,7 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 const colorText = '#d3e0d5';
 const fFamily = 'Roboto';
+const bgColor = '#262d31';
 
 const styles = StyleSheet.create({
     appWelcome: {
@@ -18,7 +19,7 @@ const styles = StyleSheet.create({
     principal: {
         marginTop: getStatusBarHeight(),
         flex: 1,
-        backgroundColor: '#262d31'
+        backgroundColor: bgColor
     },
     container: {
         padding: 25,
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         paddingHorizontal: 10,
         borderBottomColor: 'gray',
-        backgroundColor: '#262d31',
+        backgroundColor: bgColor,
         justifyContent: 'space-between',
     },
     flowInfo: {
