@@ -3,6 +3,9 @@ import { View, Text, Image, TouchableWithoutFeedback } from 'react-native';
 import styles from './styles'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
+import { SimpleLineIcons } from '@expo/vector-icons';
+import firebase from '../../../databse/firebase'
+import '@firebase/firestore'
 
 const getContactList = () => {
     return [
@@ -46,6 +49,22 @@ const getContactList = () => {
 }
 
 const Messages = () => {
+    const [users, setUsers] = useState([]);
+
+    React.useEffect(() => {
+
+        firebase
+            .firestore()
+            .collection("users")
+            .get()
+            .then(ads => {
+                console.log(ads);
+            });
+
+        //fetchData();
+        console.log("refresh");
+    }, []);
+
     const navigation = useNavigation();
 
     const [user, setUser] = useState('');
@@ -57,6 +76,15 @@ const Messages = () => {
                 <Text style={styles.appText}>
                     Chatinger
                 </Text>
+                <TouchableWithoutFeedback onPress={() => {
+                    firebase.auth().signOut().then(function () {
+                        navigation.navigate('Login');
+                    }).catch(function (error) {
+                        console.log(error);
+                    });
+                }}>
+                    <SimpleLineIcons name="logout" size={24} color="#d3e0d5" />
+                </TouchableWithoutFeedback>
             </View>
             {
                 getContactList().map(item => (

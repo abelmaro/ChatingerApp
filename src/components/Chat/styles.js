@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: 'gray',
-        padding: 10
+        padding: 10,
+        marginBottom: 10
     },
     userPhoto: {
         width: 50,
@@ -60,11 +61,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     message: {
-        margin: 15,
+        marginHorizontal: 15,
+        marginVertical: 1,
         padding: 10,
         backgroundColor: colorText,
         borderRadius: 100,
-        //alignSelf: 'flex-end'
     }
 });
 

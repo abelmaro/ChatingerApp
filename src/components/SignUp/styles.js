@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1,
         backgroundColor: bgColor,
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-evenly',
     },
     welcome: {
         color: colorText,
@@ -46,6 +46,11 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderRadius: 10,
         fontWeight: 'bold',
+    },
+    error: {
+        color: 'white',
+        fontSize: 15,
+        fontWeight: 'bold'
     },
 });
 

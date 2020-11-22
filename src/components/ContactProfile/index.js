@@ -4,7 +4,6 @@ import styles from './styles'
 
 const ContactProfile = (navigation) => {
     const contactData = navigation.route.params;
-    console.log(contactData);
     return (
         <View style={styles.container}>
             <View>
