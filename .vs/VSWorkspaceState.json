@@ -3,11 +3,9 @@
     "",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\Chat",
-    "\\src\\components\\ContactProfile",
-    "\\src\\components\\Login",
-    "\\src\\components\\Messages"
+    "\\src\\components\\Messages",
+    "\\src\\components\\Tabs"
   ],
-  "SelectedNode": "\\src\\components\\Chat\\index.js",
+  "SelectedNode": "\\src\\components\\Tabs\\styles.js",
   "PreviewInSolutionExplorer": false
 }

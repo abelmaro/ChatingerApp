@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ChatingerApp",
-    "slug": "ChatingerApp",
+    "name": "Chatinger",
+    "slug": "Chatinger",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,6 +20,8 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.chatingerApp.chatinger",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
