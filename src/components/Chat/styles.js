@@ -66,7 +66,30 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: colorText,
         borderRadius: 100,
-    }
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        //margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 25,
+        alignItems: 'center',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+        fontSize: 20
+    },
 });
 
 export default styles;

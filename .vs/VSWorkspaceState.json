@@ -1,12 +1,12 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Databse",
+    "\\databse",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\ContactProfile",
+    "\\src\\components\\Chat",
     "\\src\\components\\Messages"
   ],
-  "SelectedNode": "\\Databse\\firebase.js",
+  "SelectedNode": "\\src\\components\\Chat\\index.js",
   "PreviewInSolutionExplorer": false
 }
