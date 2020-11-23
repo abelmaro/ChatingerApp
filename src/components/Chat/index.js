@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, Image, TextInput, ScrollView, ActivityIndicator, Modal, Alert } from 'react-native';
+import { View, Text, Image, TextInput, ScrollView, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'; 
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
-import { TouchableWithoutFeedback, TouchableHighlight } from 'react-native-gesture-handler';
 import { useList } from "react-firebase-hooks/database";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as firebase from 'firebase'
@@ -59,7 +58,7 @@ const Chat = (navigation) => {
     const Message = (props) => {
         const addStyle = props.own == true ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
         return (
-            <TouchableWithoutFeedback onLongPress={() => { setModalVisible(true);setMessageInfo(props); }}>
+            <TouchableWithoutFeedback onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}>
                 <View style={[styles.message, addStyle]}>
                     <Text>{props.message}</Text>
                 </View>
@@ -102,10 +101,15 @@ const Chat = (navigation) => {
                         }}>
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
-                                <Text style={styles.modalText}>{ '"' + messageInfo.message + '"' }</Text>
-                                <TouchableWithoutFeedback onPress={() => { deleteMessage(messageInfo) }}>
-                                    <MaterialCommunityIcons name="delete-circle" size={35} color="red" />
-                                </TouchableWithoutFeedback>
+                                <Text style={styles.modalText}>{'"' + messageInfo.message + '"'}</Text>
+                                <View style={{ display: 'flex', flexDirection: 'row', width: 80,alignItems: 'center',alignContent: 'center', justifyContent: 'space-between' }}>
+                                    <TouchableWithoutFeedback onPress={() => { deleteMessage(messageInfo.messageId), setModalVisible(false) }}>
+                                        <MaterialCommunityIcons name="delete-circle" size={35} color="red" />
+                                    </TouchableWithoutFeedback>
+                                    <TouchableWithoutFeedback onPress={() => { setModalVisible(false) }}>
+                                        <Ionicons name="ios-close-circle-outline" size={35} color="black" />
+                                    </TouchableWithoutFeedback>
+                                </View>
                             </View>
                         </View>
 
@@ -116,7 +120,7 @@ const Chat = (navigation) => {
                         :
                         snapshots.map(message => {
                             return (
-                                <Message messageId={ message.val().id} message={message.val().message} own={message.val().fromUser == currentUser} key={Math.random()} />
+                                <Message messageId={message.val().id} message={message.val().message} own={message.val().fromUser == currentUser} key={Math.random()} />
                             )
                         })
                 }
