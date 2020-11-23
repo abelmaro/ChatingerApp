@@ -3,7 +3,9 @@ import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator } fro
 import styles from './styles';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import firebase from 'firebase';
+import * as firebase from 'firebase';
+import 'firebase/database'
+import 'firebase/firebase-database'
 
 const Login = () => {
     const [username, setUsername] = React.useState('');
@@ -14,7 +16,7 @@ const Login = () => {
         firebase.auth().signInWithEmailAndPassword(username, password);
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                navigation.navigate('Messages');
+                navigation.navigate('Messages', user);
             }
             else {
                 navigation.navigate('Login');

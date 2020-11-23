@@ -7,8 +7,23 @@ import Chat from './src/components/Chat';
 import ContactProfile from './src/components/ContactProfile';
 import Login from './src/components/Login';
 import SignUp from './src/components/SignUp';
-import firebase from 'firebase';
 const Stack = createStackNavigator();
+import * as firebase from 'firebase';
+import 'firebase/database'
+import 'firebase/firebase-database'
+
+//const isSignedIn = () => {
+//    firebase.auth().onAuthStateChanged(user => {
+//        if (user) {
+//            current = user;
+//            return true;
+//        }
+//        else {
+//            console.log("Not logged");
+//            return false;
+//        }
+//    });
+//}
 
 function App() {
     return (

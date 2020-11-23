@@ -3,7 +3,10 @@ import { View, Text, Image, TextInput, TouchableOpacity, Alert } from 'react-nat
 import styles from './styles';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
-import firebase from 'firebase';
+import * as firebase from 'firebase'
+import '@firebase/firestore'
+import 'firebase/database'
+import 'firebase/firebase-database'
 
 const SignUp = () => {
     const [username, setUsername] = React.useState('');
@@ -22,12 +25,23 @@ const SignUp = () => {
             return;
         }
         else {
-            firebase.auth().createUserWithEmailAndPassword(username, password).catch(function (error) {
+            firebase.auth().createUserWithEmailAndPassword(username, password).then(user => {
+                firebase.database().ref('users').push({
+                    country: '',
+                    gender: '',
+                    userId: user.user.uid,
+                    userName: user.user.email.split("@")[0],
+                    userPhoto: 'https://freepikpsd.com/wp-content/uploads/2019/10/default-profile-pic-png-5-Transparent-Images.png',
+                    numberChat: Math.round(Date.now() + Math.random())
+
+                }).then(() => {
+                    navigation.navigate('Messages');
+                });
+            }).catch(function (error) {
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 setError(errorMessage);
             });
-            navigation.navigate('Login');
         }
     }
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableWithoutFeedback, ScrollView, RefreshControl } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TouchableWithoutFeedback, ScrollView, RefreshControl, ActivityIndicator } from 'react-native';
 import styles from './styles'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
@@ -10,16 +10,29 @@ import 'firebase/database'
 import 'firebase/firebase-database'
 
 import { useList } from "react-firebase-hooks/database";
-const currentUser = firebase.auth().currentUser != undefined ? firebase.auth().currentUser.uid : '';
+const Messages = (navigation) => {
 
-const Messages = () => {
+
+
     const [users, setUsers] = useState([]);
     var fetchUsers = firebase.database().ref(`users`);
     const [snapshots, loading, error] = useList(fetchUsers);
-    const navigation = useNavigation();
+    const navigationA = useNavigation();
     const [user, setUser] = useState('');
     const [message, setMessage] = useState('');
     const [refreshing, setRefreshing] = React.useState(false);
+    console.log("___________INICIO___________")
+    console.log("___________FIN___________")
+
+    //const uid = navigation.route.params.Sb.uid;
+    const uid = 1;
+    snapshots.forEach((v, i) => {
+        if (v != null) {
+            if (v.val().userId == uid) {
+                snapshots.splice(i, 1);
+            }
+        }
+    });
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -40,7 +53,7 @@ const Messages = () => {
                 </Text>
                 <TouchableWithoutFeedback onPress={() => {
                     firebase.auth().signOut().then(function () {
-                        navigation.navigate('Login');
+                        navigationA.navigate('Login');
                     }).catch(function (error) {
                         console.log(error);
                     });
@@ -48,40 +61,38 @@ const Messages = () => {
                     <SimpleLineIcons name="logout" size={24} color="#d3e0d5" />
                 </TouchableWithoutFeedback>
             </View>
-            <ScrollView /*refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}*/>
-                {
-                    snapshots.map(item => (
-                        item.val().userId != currentUser ?
-                        <TouchableHighlight key={item.val().userId} onPress={() => {
-                            setUser(item.val().userName);
-                            setMessage(item.val().userMessage);
-                            navigation.navigate("Chat", item.val());
-                        }}>
-                            <View style={styles.container} key={item.val().userId}>
-                        {console.log(item)}
-                                <View style={styles.flowInfo}>
-                                    <View>
-                                        <Image
-                                            style={styles.userPhoto}
-                                            source={{
-                                                uri: item.val().userPhoto,
-                                            }}
-                                        />
+                <ScrollView /*refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}*/>
+                    {
+                        snapshots.map(item => (
+                            item.val().userId != uid ?
+                                <TouchableHighlight key={item.val().userId} onPress={() => {
+                                    setUser(item.val().userName);
+                                    setMessage(item.val().userMessage);
+                                    navigationA.navigate("Chat", { item: item.val(), UID: uid});
+                                }}>
+                                    <View style={styles.container} key={item.val().userId}>
+                                        <View style={styles.flowInfo}>
+                                            <View>
+                                                <Image
+                                                    style={styles.userPhoto}
+                                                    source={{
+                                                        uri: item.val().userPhoto,
+                                                    }}
+                                                />
+                                            </View>
+                                            <View style={styles.test}>
+                                                <Text style={styles.text}>{item.val().userName}</Text>
+                                                <Text style={styles.text}>{uid}</Text>
+                                            </View>
+                                        </View>
+                                        <View>
+                                            <Text style={styles.text}>11:20</Text>
+                                        </View>
                                     </View>
-                                    <View style={styles.test}>
-                                        <Text style={styles.text}>{item.val().userName}</Text>
-                                    </View>
-                                </View>
-                                <View>
-                                    <Text style={styles.text}>11:20</Text>
-                                </View>
-                            </View>
-                        </TouchableHighlight>
+                                </TouchableHighlight>
                                 : <></>
-                    ))
-                }
-            </ScrollView>
-
+                        ))}
+                </ScrollView>
         </View>
     );
 }
