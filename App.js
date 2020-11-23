@@ -1,4 +1,5 @@
 import * as React from 'react';
+import firebaseConfig from './databse/firebase';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Messages from './src/components/Messages';
@@ -8,10 +9,7 @@ import Login from './src/components/Login';
 import SignUp from './src/components/SignUp';
 import firebase from 'firebase';
 const Stack = createStackNavigator();
-const highestTimeoutId = setTimeout(() => ';');
-for (let i = 0; i < highestTimeoutId; i++) {
-    clearTimeout(i);
-}
+
 function App() {
     return (
         <NavigationContainer>

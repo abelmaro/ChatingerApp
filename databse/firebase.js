@@ -1,5 +1,7 @@
 import firebase from 'firebase'
 import '@firebase/firestore'
+import '@firebase/database'
+import '@firebase/auth'
 
 var firebaseConfig = {
     apiKey: "AIzaSyBlK9ZsEyErji_dlYZ8JKucGGv-7mw-o3A",
@@ -15,9 +17,6 @@ var firebaseConfig = {
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
-const db = firebase.firestore();
 
 
-db.collection('users').doc("SF").get().then(doc=> { console.log(doc)})
-console.log("adsds")
 export default firebase;

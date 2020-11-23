@@ -14,7 +14,6 @@ const Login = () => {
         firebase.auth().signInWithEmailAndPassword(username, password);
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                console.log(user);
                 navigation.navigate('Messages');
             }
             else {

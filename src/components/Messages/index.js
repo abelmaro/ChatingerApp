@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import styles from './styles'
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
 import { SimpleLineIcons } from '@expo/vector-icons';
-import firebase from '../../../databse/firebase'
+import * as firebase from 'firebase'
 import '@firebase/firestore'
+import 'firebase/database'
+import 'firebase/firebase-database'
+
+import { useList } from "react-firebase-hooks/database";
+const currentUser = firebase.auth().currentUser != undefined ? firebase.auth().currentUser.uid : '';
 
 const getContactList = () => {
     return [
@@ -50,27 +55,13 @@ const getContactList = () => {
 
 const Messages = () => {
     const [users, setUsers] = useState([]);
-
-    React.useEffect(() => {
-
-        firebase
-            .firestore()
-            .collection("users")
-            .get()
-            .then(ads => {
-                console.log(ads);
-            });
-
-        //fetchData();
-        console.log("refresh");
-    }, []);
-
+    var fetchUsers = firebase.database().ref(`users`);
+    const [snapshots, loading, error] = useList(fetchUsers);
     const navigation = useNavigation();
-
     const [user, setUser] = useState('');
     const [message, setMessage] = useState('');
-    return (
 
+    return (
         <View style={styles.principal}>
             <View style={styles.appWelcome}>
                 <Text style={styles.appText}>
@@ -86,38 +77,38 @@ const Messages = () => {
                     <SimpleLineIcons name="logout" size={24} color="#d3e0d5" />
                 </TouchableWithoutFeedback>
             </View>
-            {
-                getContactList().map(item => (
-                    <TouchableHighlight key={item.userId} onPress={() => {
-                        setUser(item.userName);
-                        setMessage(item.userMessage);
-                        navigation.navigate("Chat", item);
-                    }}>
-                        <View style={styles.container} key={item.userId}>
-                            <View style={styles.flowInfo}>
+            <ScrollView>
+                {
+                    snapshots.map(item => (
+                        <TouchableHighlight key={item.val().userId} onPress={() => {
+                            setUser(item.val().userName);
+                            setMessage(item.val().userMessage);
+                            navigation.navigate("Chat", item.val());
+                        }}>
+                            <View style={styles.container} key={item.val().userId}>
+                                <View style={styles.flowInfo}>
+                                    <View>
+                                        <Image
+                                            style={styles.userPhoto}
+                                            source={{
+                                                uri: item.val().userPhoto,
+                                            }}
+                                        />
+                                    </View>
+                                    <View style={styles.test}>
+                                        <Text style={styles.text}>{item.val().userName}</Text>
+                                    </View>
+                                </View>
                                 <View>
-                                    <Image
-                                        style={styles.userPhoto}
-                                        source={{
-                                            uri: item.userPhoto,
-                                        }}
-                                    />
-                                </View>
-                                <View style={styles.test}>
-                                    <Text style={styles.text}>{item.userName}</Text>
-                                    <Text style={styles.text}>{item.userMessage}</Text>
+                                    <Text style={styles.text}>11:20</Text>
                                 </View>
                             </View>
-                            <View>
-                                <Text style={styles.text}>{item.messageHour}</Text>
-                            </View>
-                        </View>
-                    </TouchableHighlight>
+                        </TouchableHighlight>
 
-                ))
-            }
-            {/*<Text style={styles.text}>User: {user}</Text>
-                <Text style={styles.text}>Message: {message}</Text>*/}
+                    ))
+                }
+            </ScrollView>
+
         </View>
     );
 }

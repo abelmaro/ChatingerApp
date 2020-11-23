@@ -1,10 +1,15 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, Image, TextInput, ScrollView } from 'react-native';
+import { View, Text, Image, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'; 
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { useList } from "react-firebase-hooks/database";
+    
+import * as firebase from 'firebase'
+import 'firebase/database'
+import 'firebase/firebase-database'
 
 const Message = (props) => {
     const addStyle = props.own == true ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
@@ -15,48 +20,40 @@ const Message = (props) => {
     );
 }
 
+const currentUser = firebase.auth().currentUser != undefined ? firebase.auth().currentUser.uid : '';
+
+const generateId = () => {
+    return Date.now() + Math.random();
+}
+
 const sendMessage = (message) => {
-    let newMessage = {
-        id: Math.random(),
-        own: true,
-        message: message
-    }
+    const db = firebase.database().ref('messages');
+
     try {
-        console.log("exito");
-        mes.push(newMessage);
+        db.push({
+            id: generateId(),
+            fromUser: currentUser,
+            toUser: 25,
+            message: message })
     } catch (e) {
         console.log(e);
     }
 }
 
+const handlePosition = (fromUser) => {
+
+    console.log();
+}
 const Chat = (navigation) => {
-    const messages = [
-        //{
-        //    id: Math.random(),
-        //    own: true,
-        //    message: 'Hello Friend'
-        //},
-        //{
-        //    id: Math.random(),
-        //    own: true,
-        //    message: 'How are you?'
-        //},
-        //{
-        //    id: Math.random(),
-        //    own: false,
-        //    message: 'Hey!'
-        //},
-        //{
-        //    id: Math.random(),
-        //    own: false,
-        //    message: 'Fine, what about you?'
-        //}
-    ];
+console.log(currentUser);
+    const messages = [];
     const [mes, setMes] = useState(messages);
     const [value, onChangeText] = useState('');
     const userInfo = navigation.route.params;
     const navigationDraw = useNavigation();
     const scrollViewRef = useRef();
+    var messagesFetch = firebase.database().ref("messages");
+    const [snapshots, loading, error] = useList(messagesFetch);
 
     return (
         <View style={styles.container}>
@@ -78,10 +75,11 @@ const Chat = (navigation) => {
                 ref={scrollViewRef}
                 onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
             >
-                <Message message={userInfo.userMessage} own={false} key={Math.random()} />
                 {
-                    mes.map(message => {
-                        return (<Message message={message.message} own={message.own} key={message.id} />)
+                    loading ? <ActivityIndicator size="large" color="#FFF" />
+                        :
+                    snapshots.map(message => {
+                        return (<Message message={message.val().message} own={message.val().fromUser == currentUser} key={Math.random()} />)
                     })
                 }
             </ScrollView>
@@ -90,9 +88,12 @@ const Chat = (navigation) => {
                     onChangeText={text => onChangeText(text)}
                     value={value} />
                 <TouchableWithoutFeedback onPress={() => {
-                    value != '' ?
+                    if (value != '') {
                         setMes(mes.concat({ id: Math.random(), own: true, message: value }))
-                        : <></>
+                        sendMessage(value)
+                    } else {
+                        <></>
+                    }
                     onChangeText('')
                     console.log(value)
                 }}>

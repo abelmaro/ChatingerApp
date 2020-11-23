@@ -27,7 +27,7 @@ const SignUp = () => {
                 var errorMessage = error.message;
                 setError(errorMessage);
             });
-            //navigation.navigate('Login');
+            navigation.navigate('Login');
         }
     }
 

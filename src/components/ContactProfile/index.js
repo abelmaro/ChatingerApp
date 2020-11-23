@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput } from 'react-native';
+import React from 'react';
+import { View, Text, Image } from 'react-native';
 import styles from './styles'
 
 const ContactProfile = (navigation) => {

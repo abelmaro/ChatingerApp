@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     },
     message: {
         marginHorizontal: 15,
-        marginVertical: 1,
+        marginVertical: 2,
         padding: 10,
         backgroundColor: colorText,
         borderRadius: 100,
