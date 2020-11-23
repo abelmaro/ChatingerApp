@@ -46,128 +46,111 @@ const deleteMessage = (messageId) => {
 }
 
 const Chat = (navigation) => {
-    const messages = [];
-    const [mes, setMes] = useState(messages);
-    const [value, onChangeText] = useState('');
-    const [modalVisible, setModalVisible] = useState(false);
-    const userInfo = navigation.route.params.item;
-    console.log("____INICIO____")
-    console.log(userInfo);
-    console.log("____FIN____")
     const navigationDraw = useNavigation();
-    const scrollViewRef = useRef();
-    const [messageInfo, setMessageInfo] = useState({});
+    if (navigation.route.params == null) {
+        navigationDraw.navigate('Login');
+    } else {
+        const messages = [];
+        const [mes, setMes] = useState(messages);
+        const [value, onChangeText] = useState('');
+        const [modalVisible, setModalVisible] = useState(false);
+        const userInfo = navigation.route.params;
+        const scrollViewRef = useRef();
+        const [messageInfo, setMessageInfo] = useState({});
 
-    firebase.database().ref('users').orderByChild('userId').equalTo(currentUser).once("value")
-        .then((snapshot) => {
-            snapshot.forEach((subSnapshot) => {
-                chatNumber = subSnapshot.val().numberChat;
+        firebase.database().ref('users').orderByChild('userId').equalTo(currentUser).once("value")
+            .then((snapshot) => {
+                snapshot.forEach((subSnapshot) => {
+                    chatNumber = subSnapshot.val().numberChat;
+                });
             });
-    });
 
 
-    var messagesFetch = firebase.database().ref("conversations").orderByChild('chatNumber').equalTo(userInfo.item.numberChat + chatNumber);
-    var messagesFetchInverse = firebase.database().ref("conversations").orderByChild('from_To').equalTo(userInfo.item.userId + '_' + currentUser);
+        var messagesFetch = firebase.database().ref("conversations").orderByChild('chatNumber').equalTo(userInfo.item.numberChat + chatNumber);
+        var messagesFetchInverse = firebase.database().ref("conversations").orderByChild('from_To').equalTo(userInfo.item.userId + '_' + currentUser);
 
-    const Message = (props) => {
-        const addStyle = props.own == true ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
+        const Message = (props) => {
+            const addStyle = props.own == true ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
+            return (
+                <TouchableWithoutFeedback onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}>
+                    <View style={[styles.message, addStyle]}>
+                        <Text>{props.message}</Text>
+                    </View>
+                </TouchableWithoutFeedback>
+            );
+        }
+
+        const [snapshots, loading, error] = useList(messagesFetch);
+
         return (
-            <TouchableWithoutFeedback onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}>
-                <View style={[styles.message, addStyle]}>
-                    <Text>{props.message}</Text>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <TouchableWithoutFeedback onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)}>
+                        <Image style={styles.userPhoto}
+                            source={{
+                                uri: userInfo.item.userPhoto,
+                            }}
+                        />
+                    </TouchableWithoutFeedback>
+                    <Text style={styles.text}>{userInfo.item.userName}</Text>
+                    <TouchableWithoutFeedback onPress={() => navigationDraw.goBack()}>
+                        <AntDesign name="back" size={24} color="white" style={styles.icon} />
+                    </TouchableWithoutFeedback>
                 </View>
-            </TouchableWithoutFeedback>
-        );
-    }
-
-    const [snapshots, loading, error] = useList(messagesFetch);
-    const [snapshotsI, loadingI, errorI] = useList(messagesFetchInverse);
-
-    function getUnique(arr, comp) {
-        const unique = arr.map(e => e[comp])
-            .map((e, i, final) => final.indexOf(e) === i && i)
-            .filter((e) => arr[e]).map(e => arr[e]);
-
-        return unique;
-    }
-
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableWithoutFeedback onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)}>
-                    <Image style={styles.userPhoto}
-                        source={{
-                            uri: userInfo.item.userPhoto,
-                        }}
-                    />
-                </TouchableWithoutFeedback>
-                <Text style={styles.text}>{userInfo.item.userName}</Text>
-                <TouchableWithoutFeedback onPress={() => navigationDraw.goBack()}>
-                    <AntDesign name="back" size={24} color="white" style={styles.icon} />
-                </TouchableWithoutFeedback>
-            </View>
-            <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
-                <View style={styles.centeredView}>
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => {
-                            setModalVisible(false)
-                        }}>
-                        <View style={styles.centeredView}>
-                            <View style={styles.modalView}>
-                                <Text style={styles.modalText}>{'"' + messageInfo.message + '"'}</Text>
-                                <View style={{ display: 'flex', flexDirection: 'row', width: 80, alignItems: 'center', alignContent: 'center', justifyContent: 'space-between' }}>
-                                    <TouchableWithoutFeedback onPress={() => { deleteMessage(messageInfo.messageId), setModalVisible(false) }}>
-                                        <MaterialCommunityIcons name="delete-circle" size={35} color="red" />
-                                    </TouchableWithoutFeedback>
-                                    <TouchableWithoutFeedback onPress={() => { setModalVisible(false) }}>
-                                        <Ionicons name="ios-close-circle-outline" size={35} color="black" />
-                                    </TouchableWithoutFeedback>
+                <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
+                    <View style={styles.centeredView}>
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                setModalVisible(false)
+                            }}>
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <Text style={styles.modalText}>{'"' + messageInfo.message + '"'}</Text>
+                                    <View style={{ display: 'flex', flexDirection: 'row', width: 80, alignItems: 'center', alignContent: 'center', justifyContent: 'space-between' }}>
+                                        <TouchableWithoutFeedback onPress={() => { deleteMessage(messageInfo.messageId), setModalVisible(false) }}>
+                                            <MaterialCommunityIcons name="delete-circle" size={35} color="red" />
+                                        </TouchableWithoutFeedback>
+                                        <TouchableWithoutFeedback onPress={() => { setModalVisible(false) }}>
+                                            <Ionicons name="ios-close-circle-outline" size={35} color="black" />
+                                        </TouchableWithoutFeedback>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
 
-                    </Modal>
-                </View>
-                {
-                    loading ? <ActivityIndicator size="large" color="#FFF" />
-                        :
-                        snapshots.map(message => {
+                        </Modal>
+                    </View>
+                    {
+                        loading ? <ActivityIndicator size="large" color="#FFF" />
+                            :
+                            snapshots.map(message => {
                                 return (
                                     <Message messageId={message.val().id} message={message.val().message} own={message.val().fromUser == currentUser} key={Math.random()} />
                                 )
-                        })
-                }
-                {
-                    //loadingI ? <ActivityIndicator size="large" color="#FFF" />
-                    //    : 
-                    //    snapshotsI.map(message => {
-                    //        return (
-                    //            <Message messageId={message.val().id} message={message.val().message} own={message.val().fromUser == currentUser} key={Math.random()} />
-                    //        )
-                    //    })
-                }
-            </ScrollView>
-            <View style={styles.sendSection}>
-                <TextInput style={styles.messageInput}
-                    onChangeText={text => onChangeText(text)}
-                    value={value} />
-                <TouchableWithoutFeedback onPress={() => {
-                    if (value != '') {
-                        setMes(mes.concat({ id: Math.random(), own: true, message: value }))
-                        sendMessage(value, userInfo.UID, userInfo.numberChat + chatNumber)
-                    } else {
-                        <></>
+                            })
                     }
-                    onChangeText('')
-                }}>
-                    <Ionicons name="md-send" size={40} color="white" />
-                </TouchableWithoutFeedback>
+                </ScrollView>
+                <View style={styles.sendSection}>
+                    <TextInput style={styles.messageInput}
+                        onChangeText={text => onChangeText(text)}
+                        value={value} />
+                    <TouchableWithoutFeedback onPress={() => {
+                        if (value != '') {
+                            setMes(mes.concat({ id: Math.random(), own: true, message: value }))
+                            sendMessage(value, userInfo.UID, userInfo.item.numberChat + chatNumber)
+                        } else {
+                            <></>
+                        }
+                        onChangeText('')
+                    }}>
+                        <Ionicons name="md-send" size={40} color="white" />
+                    </TouchableWithoutFeedback>
+                </View>
             </View>
-        </View>
-    );
+        );
+    }
 }
 
 export default Chat;

@@ -1,10 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\databse",
     "\\src",
     "\\src\\components",
     "\\src\\components\\Chat",
+    "\\src\\components\\ContactProfile",
+    "\\src\\components\\Login",
     "\\src\\components\\Messages"
   ],
   "SelectedNode": "\\src\\components\\Chat\\index.js",
