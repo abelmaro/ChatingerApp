@@ -32,7 +32,8 @@ const SignUp = () => {
                     userId: user.user.uid,
                     userName: user.user.email.split("@")[0],
                     userPhoto: 'https://freepikpsd.com/wp-content/uploads/2019/10/default-profile-pic-png-5-Transparent-Images.png',
-                    numberChat: Math.round(Date.now() + Math.random())
+                    numberChat: Math.round(Date.now() + Math.random()),
+                    colorChat: ''
 
                 }).then(() => {
                     navigation.navigate('Messages');
