@@ -1,8 +1,9 @@
-import React, { useState, Component } from 'react';
+import React, { useState, Component, useReducer } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 import styles from './styles';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import Logo from '../../../assets/logo.png';
 import * as firebase from 'firebase';
 import 'firebase/database'
 import 'firebase/firebase-database'
@@ -11,12 +12,22 @@ const Login = () => {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const navigation = useNavigation();
-
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            const userRelevantData = {
+                uid: user.uid,
+            }
+            navigation.navigate('Messages', userRelevantData);
+        }
+    });
     const handleLogin = () => {
         firebase.auth().signInWithEmailAndPassword(username, password);
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                navigation.navigate('Messages', user.toJSON());
+                const userRelevantData = {
+                    uid: user.uid,
+                }
+                navigation.navigate('Messages', userRelevantData);
             }
             else {
                 navigation.navigate('Login');
@@ -26,18 +37,20 @@ const Login = () => {
     return (
         <View style={ styles.container }>
             <Text style={ styles.welcome }>CHATINGER</Text>
-            <View style={{backgroundColor: 'white', width: 250, height: 250, borderRadius: 200}}/>
+            <Image source={require('../../../assets/logo.png')} style={{width:150, height: 150}} />
             <View>
                 <TextInput style={styles.input}
                     value={username}
                     placeholder="Email"
-                    onChangeText={setUsername}>
+                    onChangeText={setUsername}
+                    placeholderTextColor="white">
                 </TextInput>
                 <TextInput style={styles.input}
                     value={password}
                     placeholder="Password"
                     onChangeText={setPassword}
-                    secureTextEntry>
+                    secureTextEntry
+                    placeholderTextColor="white" >
                 </TextInput>
                 
             </View>

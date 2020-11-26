@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, Image, TouchableWithoutFeedback, ScrollView, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, Image, TouchableWithoutFeedback, ScrollView, RefreshControl, ActivityIndicator,TouchableHighlight } from 'react-native';
 import styles from './styles'
-import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
 import { SimpleLineIcons } from '@expo/vector-icons';
 import * as firebase from 'firebase'
@@ -9,13 +8,7 @@ import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
 import { useList } from "react-firebase-hooks/database";
-import Tabs from '../Tabs/tabs';
 
-//const getLastMessage = () => {
-//    var message = firebase.database().ref('conversations').once("value").then((res) => {
-//        console.log(res);
-//    });
-//}
 
 const Messages = (navigation) => {
     const navigationA = useNavigation();
@@ -23,7 +16,6 @@ const Messages = (navigation) => {
         navigationA.navigate('Login');
         return (<></>);
     } else {
-        console.log(navigation.route.params.uid);
         var fetchUsers = firebase.database().ref(`users`);
         const [users, setUsers] = useState([]);
         const [snapshots, loading, error] = useList(fetchUsers);
@@ -32,7 +24,6 @@ const Messages = (navigation) => {
         const [refreshing, setRefreshing] = React.useState(false);
 
         const uid = navigation.route.params.uid;
-        //const uid = 1;
         snapshots.forEach((v, i) => {
             if (v != null) {
                 if (v.val().userId == uid) {
@@ -77,7 +68,8 @@ const Messages = (navigation) => {
                                 <TouchableHighlight key={item.val().userId} onPress={() => {
                                     setUser(item.val().userName);
                                     setMessage(item.val().userMessage);
-                                    navigationA.navigate("Chat", { item: item.val(), UID: uid });
+                                    item.val().currentUser = uid;
+                                    navigationA.navigate("Chat", { item: item.val(), UID: uid});
                                 }}>
                                     <View style={styles.container} key={item.val().userId}>
                                         <View style={styles.flowInfo}>

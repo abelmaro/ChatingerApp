@@ -9,9 +9,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as firebase from 'firebase'
 import 'firebase/database'
 import 'firebase/firebase-database'
-import { sub } from 'react-native-reanimated';
 
-const currentUser = firebase.auth().currentUser != undefined ? firebase.auth().currentUser.uid : '';
+var currentUser = ''; /*= firebase.auth().currentUser != undefined ? firebase.auth().currentUser.uid : '';*/
 const generateId = () => {
     return Date.now() + Math.random();
 }
@@ -46,18 +45,20 @@ const deleteMessage = (messageId) => {
 }
 
 const Chat = (navigation) => {
+    console.clear()
+    console.log(navigation)
     const navigationDraw = useNavigation();
     if (navigation.route.params == null) {
         navigationDraw.navigate('Login');
     } else {
+        const userInfo = navigation.route.params;
+        currentUser = userInfo.UID;
         const messages = [];
         const [mes, setMes] = useState(messages);
         const [value, onChangeText] = useState('');
         const [modalVisible, setModalVisible] = useState(false);
-        const userInfo = navigation.route.params;
         const scrollViewRef = useRef();
         const [messageInfo, setMessageInfo] = useState({});
-
         firebase.database().ref('users').orderByChild('userId').equalTo(currentUser).once("value")
             .then((snapshot) => {
                 snapshot.forEach((subSnapshot) => {
@@ -72,7 +73,7 @@ const Chat = (navigation) => {
         const Message = (props) => {
             const addStyle = props.own == true ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
             return (
-                <TouchableWithoutFeedback onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}>
+                <TouchableWithoutFeedback /*onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}*/>
                     <View style={[styles.message, addStyle]}>
                         <Text>{props.message}</Text>
                     </View>
@@ -98,7 +99,7 @@ const Chat = (navigation) => {
                     </TouchableWithoutFeedback>
                 </View>
                 <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
-                    <View style={styles.centeredView}>
+                    {/*<View style={styles.centeredView}>
                         <Modal
                             animationType="slide"
                             transparent={true}
@@ -121,7 +122,7 @@ const Chat = (navigation) => {
                             </View>
 
                         </Modal>
-                    </View>
+                    </View>*/}
                     {
                         loading ? <ActivityIndicator size="large" color="#FFF" />
                             :

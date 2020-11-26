@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { ceil } from 'react-native-reanimated';
 
 const colorText = '#d3e0d5';
 const fFamily = 'Roboto';
@@ -42,7 +41,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         backgroundColor: 'gray',
         padding: 10,
     },
@@ -55,10 +54,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         color: colorText,
         fontSize: 16,
-        width: 300,
         backgroundColor: '#9a9a9a',
-        right: 10,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        minWidth: '80%',
+        maxWidth: 500,
     },
     message: {
         marginHorizontal: 15,
