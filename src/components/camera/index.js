@@ -3,36 +3,34 @@ import { View, Text, TouchableOpacity, Platform, Alert, Image} from 'react-nativ
 import styles from './styles'
 import * as ImagePicker from 'expo-image-picker';
 import { Permissions } from 'react-native-unimodules';
+import { useList } from "react-firebase-hooks/database";
+import ContactImage from '../../sharedComponents/ContactImage';
 import * as firebase from 'firebase';
 import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
-import { CurrentRenderContext } from '@react-navigation/native';
 
 const CameraComponent = (props) => {
 
     const currentUser = firebase.auth().currentUser;
 
-    const [image, setImage] = useState(null);
-
     const selectOption = () => {
         if (ImagePicker.getCameraPermissionsAsync()) {
-            //Alert.alert(
-            //    'Choose a picture!',
-            //    'We want to see your smile :)',
-            //    [
-            //        {
-            //            text: 'Gallery',
-            //            onPress: () => getImageFromGalery()
-            //        },
-            //        {
-            //            text: 'Cancelar',
-            //            style: 'cancel'
-            //        }
-            //    ],
-            //    { cancelable: false }
-            //);
-            getImageFromGalery()
+            Alert.alert(
+                'Choose a picture!',
+                'We want to see your smile :)',
+                [
+                    {
+                        text: 'Gallery',
+                        onPress: () => getImageFromGalery()
+                    },
+                    {
+                        text: 'Cancelar',
+                        style: 'cancel'
+                    }
+                ],
+                { cancelable: false }
+            );
         }
     }
     const getImageFromGalery = async () => {
@@ -46,7 +44,6 @@ const CameraComponent = (props) => {
         });
 
         if (!result.cancelled) {
-            setImage(result.uri);
             let b64ToSave = removeDataImage(result.base64);
             if (currentUser != null) {
                 uploadFirebase(currentUser.uid, b64ToSave);
@@ -55,11 +52,13 @@ const CameraComponent = (props) => {
     }
 
     const uploadFirebase = (userId, b64) => {
+        console.log(userId + '\n' + b64)
         firebase.database().ref('users').orderByChild('userId').equalTo(userId).once('value')
             .then((snapshot) => {
                 snapshot.forEach((subSnapshot) => {
                     let key = subSnapshot.key;
-                    firebase.database().ref(`users/${key}`).child('imageBase64').set(b64);
+                    firebase.database().ref(`users/${key}`).child('imageBase64').set(removeDataImage(b64)).then(error => console.log(error));
+                    setImage(removeDataImage(b64))
                 });
             });
     }
@@ -81,19 +80,18 @@ const CameraComponent = (props) => {
 
     return (
         <View>
-            <TouchableOpacity style={[styles.btnSiguiente, { backgroundColor: 'white', padding: 10 }]} onPress={() => selectOption()}>
-                <Text style={styles.textSiguiente}>Upload image</Text>
-            </TouchableOpacity>
             {
-                image != null ?
+                currentUser != null ?
                     <View>
-                        <Text style={{ color: 'white' }}>
-                            Successfull
-                            </Text>
+                        <ContactImage userId={currentUser.uid} styles={{ width: 200, height: 200, borderRadius: 200, borderWidth: 5, borderColor: 'white' }} />
                     </View>
                     :
                     <></>
             }
+            <TouchableOpacity style={[styles.btnSiguiente, { backgroundColor: 'white', padding: 10 }]} onPress={() => selectOption()}>
+                <Text style={styles.textSiguiente}>Upload image</Text>
+            </TouchableOpacity>
+
         </View>
     );
 }

@@ -9,62 +9,32 @@ import * as firebase from 'firebase';
 import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
-import { sub } from 'react-native-reanimated';
+import { ColorPicker } from 'react-native-color-picker'
 
-const getUserData = async (currentUser) => {
-    var arr = [];
-    await firebase.database().ref('users').orderByChild('userId').equalTo(currentUser.uid).once('value')
-        .then((snapshot) => {
-            snapshot.forEach((subSnapshot) => {
-                if (subSnapshot != null) {
-                    arr.push(subSnapshot);
-                    return;
-                }
-            });
-        });
-
-    return Promise.all(arr);
+const getUserData = (currentUser) => {
+    firebase.database().ref('users').orderByChild('userId').equalTo(currentUser.uid).once('value').then(res => {
+        return res;
+    });;
 }
 
+const Picker = () => (
+    <ColorPicker
+        onColorSelected={color => alert(`Color selected: ${color}`)}
+        style={{ flex: 1 }}
+    />
+)
 
 const Profile = (params) => {
     const currentUser = firebase.auth().currentUser;
     const navigation = useNavigation();
-    var [user, setUser] = useState(null);
-    if (currentUser != null) {
-        setTimeout(() => {
-            getUserData(currentUser).then(data => {
-                console.log(data)
-            });
-        }, 2000);
-    }
-    console.log(user)
+    var [user, setUser] = useState({});
 
-    //const contactData = navigation.route.params;
     return (
         <View style={styles.container}>
-            <View>
-                <TouchableWithoutFeedback onPress={() => { alert("cambia foto") }}>
-                    <Image style={styles.userPhoto}
-                        source={{
-                            uri: "https://freepikpsd.com/wp-content/uploads/2019/10/default-profile-pic-png-5-Transparent-Images.png",
-                        }} />
-                </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.infoContainer}>
-                <Text style={styles.userName}>
-                    { user.userName}
-                </Text>
-                {user != {} ?
-                    <View>
-                        <Text style={styles.userInfo}>
-                            <Text styles={{ color: 'white' }}>{user.gender}</Text>
-                        </Text>
-                    </View>
-                    : <></>
-                }
-            </View>
             <CameraComponent />
+            <View style={styles.colorPickerContainer}>
+                <Picker />
+            </View>
         </View>
     );
 }

@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
 import { useList } from "react-firebase-hooks/database";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import ContactImage from '../../sharedComponents/ContactImage';
 import * as firebase from 'firebase'
 import 'firebase/database'
 import 'firebase/firebase-database'
@@ -87,11 +88,7 @@ const Chat = (navigation) => {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <TouchableWithoutFeedback onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)}>
-                        <Image style={styles.userPhoto}
-                            source={{
-                                uri: userInfo.item.userPhoto,
-                            }}
-                        />
+                        <ContactImage userId={userInfo.item.userId} styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white' }} />
                     </TouchableWithoutFeedback>
                     <Text style={styles.text}>{userInfo.item.userName}</Text>
                     <TouchableWithoutFeedback onPress={() => navigationDraw.goBack()}>

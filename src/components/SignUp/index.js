@@ -3,6 +3,7 @@ import { View, Text, Image, TextInput, TouchableOpacity, Alert } from 'react-nat
 import styles from './styles';
 import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'
+import Logo from '../../../assets/logo.png';
 import * as firebase from 'firebase'
 import '@firebase/firestore'
 import 'firebase/database'
@@ -26,6 +27,7 @@ const SignUp = () => {
         }
         else {
             firebase.auth().createUserWithEmailAndPassword(username, password).then(user => {
+                var newUser = user;
                 firebase.database().ref('users').push({
                     country: '',
                     gender: '',
@@ -33,9 +35,20 @@ const SignUp = () => {
                     userName: user.user.email.split("@")[0],
                     userPhoto: 'https://freepikpsd.com/wp-content/uploads/2019/10/default-profile-pic-png-5-Transparent-Images.png',
                     numberChat: Math.round(Date.now() + Math.random()),
-                    colorChat: ''
+                    colorChat: '',
+                    tableKey: ''
 
                 }).then(() => {
+                    firebase.database().ref('users').orderByChild('userId').equalTo(newUser.user.uid).once('value')
+                        .then((snapshot) => {
+                            snapshot.forEach((subSnapshot) => {
+                                if (subSnapshot != null) {
+                                    const tableKey = Object.keys(snapshot.val())[0];
+                                    console.log(tableKey);
+                                    firebase.database().ref(`users/${subSnapshot.key}`).child('tableKey').set(tableKey);
+                                }
+                            });
+                        });
                     navigation.navigate('Messages');
                 });
             }).catch(function (error) {
@@ -50,7 +63,7 @@ const SignUp = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.welcome}>JOIN US!</Text>
-            <View style={{ backgroundColor: 'white', width: 250, height: 250, borderRadius: 200 }} />
+            <Image source={require('../../../assets/logo.png')} style={{ width: 150, height: 150 }} />
             <View>
                 <TextInput style={styles.input}
                     value={username}

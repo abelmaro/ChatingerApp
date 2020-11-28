@@ -1,27 +1,25 @@
-import React, { useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableWithoutFeedback, ScrollView, RefreshControl, ActivityIndicator,TouchableHighlight } from 'react-native';
 import styles from './styles'
 import { useNavigation, DrawerActions } from '@react-navigation/native'
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useList } from "react-firebase-hooks/database";
+import ContactImage from '../../sharedComponents/ContactImage';
 import * as firebase from 'firebase'
 import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
-
-
+var chatNumber = 0;
 const Messages = (navigation) => {
     const navigationA = useNavigation();
-    
-    var fetchUsers = firebase.database().ref(`users`);
+    const [currentUid, setCurrentUid] = useState(0);
     const [users, setUsers] = useState([]);
-    const [snapshots, loading, error] = useList(fetchUsers);
+    const [snapshots, loading, error] = useList(firebase.database().ref(`users`));
     const [user, setUser] = useState('');
     const [message, setMessage] = useState('');
     const [refreshing, setRefreshing] = React.useState(false);
+    const uid = currentUid;
 
-    const uid = 1;
-    //const uid = navigation.route.params.uid;
     snapshots.forEach((v, i) => {
         if (v != null) {
             if (v.val().userId == uid) {
@@ -29,6 +27,35 @@ const Messages = (navigation) => {
             }
         }
     });
+
+    function removeDuplicates(originalArray, prop) {
+        var newArray = [];
+        var lookupObject = {};
+
+        for (var i in originalArray) {
+            lookupObject[originalArray[i][prop]] = originalArray[i];
+        }
+
+        for (i in lookupObject) {
+            newArray.push(lookupObject[i]);
+        }
+        return newArray;
+    }
+
+    firebase.auth().onAuthStateChanged((user) => {
+        if (!user) {
+            navigationA.navigate('Login');
+        } else {
+            setCurrentUid(user.uid);
+        }
+    });
+
+    firebase.database().ref('users').orderByChild('userId').equalTo(currentUid).once("value")
+        .then((snapshot) => {
+            snapshot.forEach((subSnapshot) => {
+                chatNumber = subSnapshot.val().numberChat;
+            });
+        });
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -66,9 +93,10 @@ const Messages = (navigation) => {
             </View>
             <ScrollView /*refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}*/>
                 {
-                    snapshots.map(item => (
+                    
+                    removeDuplicates(snapshots, "userId").map(item => (
                         item.val().userId != uid ?
-                            <TouchableHighlight key={item.val().userId} onPress={() => {
+                            <TouchableHighlight key={Math.random()} onPress={() => {
                                 setUser(item.val().userName);
                                 setMessage(item.val().userMessage);
                                 item.val().currentUser = uid;
@@ -77,16 +105,13 @@ const Messages = (navigation) => {
                                 <View style={styles.container} key={item.val().userId}>
                                     <View style={styles.flowInfo}>
                                         <View>
-                                            <Image
-                                                style={styles.userPhoto}
-                                                source={{
-                                                    uri: item.val().userPhoto,
-                                                }}
-                                            />
+                                            <ContactImage userId={item.val().userId} styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white'}}/>
+                                            
                                         </View>
                                         <View style={styles.test}>
                                             <Text style={styles.text}>{item.val().userName}</Text>
-                                            <Text style={styles.text}>{uid}</Text>
+                                            <Text style={styles.text}>Send new message</Text>
+                                            
                                         </View>
                                     </View>
                                     <View>

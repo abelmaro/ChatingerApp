@@ -9,9 +9,9 @@ import 'firebase/database'
 import 'firebase/firebase-database'
 
 const Login = () => {
+    const navigation = useNavigation();
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
-    const navigation = useNavigation();
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             const userRelevantData = {
