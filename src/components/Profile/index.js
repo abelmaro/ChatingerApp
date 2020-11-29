@@ -1,26 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableWithoutFeedback, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, Modal } from 'react-native';
 import styles from './styles'
 import { useNavigation } from '@react-navigation/native'
-import * as ImagePicker from 'expo-image-picker';
-import { Permissions } from 'react-native-unimodules';
 import CameraComponent from '../camera';
 import * as firebase from 'firebase';
 import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
-import { ColorPicker, fromHsv } from 'react-native-color-picker'
-import { ListItem, Slider } from 'react-native-elements';
-import { SimpleLineIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { ColorPicker } from 'react-native-color-picker'
+import { ListItem } from 'react-native-elements';
+import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import CountryList from '../../../src/utils/countryList';
 
-const getUserData = (currentUser) => {
-    //const [userData, setUserData] = useState([]);
-    firebase.database().ref('users').orderByChild('userId').equalTo(currentUser).once('value').then(res => {
-        console.log(res);
-    });;
-}
 const saveColorSelected = (color) => {
     const userId = firebase.auth().currentUser.uid;
     firebase.database().ref('users').orderByChild('userId').equalTo(userId).once('value')
@@ -35,7 +27,7 @@ const Picker = () => (
     <ColorPicker
         style={{ flex: 1, width: 200 }}
         hideSliders
-        onColorSelected={color => {
+        onColorSelected={(color) => {
             saveColorSelected(color);
         }}
     />
@@ -50,7 +42,7 @@ const DropDown = (props, defaultItem, height) => {
                 containerStyle={{ height: 30, width: 120 }}
                 style={{ backgroundColor: '#fafafa' }}
                 dropDownStyle={{ backgroundColor: '#FFF', position: "absolute", zIndex: 100 }}
-            //onChangeItem={item => console.log(item.label, item.value)}
+                //onChangeItem={item => console.log(item.label, item.value)}
             />
         </View>
     )
@@ -64,8 +56,14 @@ const Profile = (params) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        getUserData(currentUser.uid);
-    });
+        firebase.database().ref('users').orderByChild('userId').equalTo(currentUser.uid).on('value', (snapshot) => {
+            if (snapshot) {
+                snapshot.forEach((subSnapshot) => {
+                    setUser(subSnapshot.val())
+                });
+            }
+        })
+    }, []);
 
     return (
         <>
@@ -128,7 +126,7 @@ const Profile = (params) => {
                     <TouchableWithoutFeedback onLongPress={() => {
                         setModalVisible(true);
                     }}>
-                        <View style={{ width: 27, height: 27, backgroundColor: 'red', borderRadius: 200 }}></View>
+                        <View style={{ width: 27, height: 27, backgroundColor: user == null ? 'black' : user["colorChat"], borderRadius: 200, borderWidth: 1, borderColor: 'black' }}></View>
                     </TouchableWithoutFeedback>
                 </ListItem>
                 <ListItem bottomDivider style={styles.itemList}>

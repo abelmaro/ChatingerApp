@@ -105,7 +105,7 @@ const Messages = (navigation) => {
                     loading ? <ActivityIndicator size="large" color="#FFF" /> :
                     snapshots.map(item => (
                         item.val().userId != uid ?
-                            <ContactChat item={ item } />
+                            <ContactChat item={item} key={ Math.random() }/>
                             : <></>
                     ))}
             </ScrollView>

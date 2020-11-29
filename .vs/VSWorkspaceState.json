@@ -3,10 +3,11 @@
     "",
     "\\src",
     "\\src\\components",
+    "\\src\\components\\Chat",
+    "\\src\\components\\Messages",
     "\\src\\components\\Profile",
-    "\\src\\sharedComponents",
-    "\\src\\sharedComponents\\ContactImage"
+    "\\src\\utils"
   ],
-  "SelectedNode": "\\src\\components\\Profile\\index.js",
+  "SelectedNode": "\\App.js",
   "PreviewInSolutionExplorer": false
 }

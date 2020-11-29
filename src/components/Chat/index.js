@@ -19,7 +19,6 @@ var chatNumber = 0;
 var chatColor = 'white';
 const sendMessage = (message, toUser, userNumber) => {
     const db = firebase.database().ref('conversations');
-    console.log("CurrentUser: " + currentUser + "\nToUser: " + toUser);
     try {
         db.push({
             id: generateId(),
@@ -48,7 +47,6 @@ const deleteMessage = (messageId) => {
 
 const Chat = (navigation) => {
     console.clear()
-    console.log(navigation)
     const navigationDraw = useNavigation();
     if (navigation.route.params == null) {
         navigationDraw.navigate('Login');
@@ -71,12 +69,13 @@ const Chat = (navigation) => {
 
 
         var messagesFetch = firebase.database().ref("conversations").orderByChild('chatNumber').equalTo(userInfo.item.numberChat + chatNumber);
-
+        console.log();
         const Message = (props) => {
-            const addStyle = props.own == true ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
+            const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: chatColor == "#000000" ? 'white' : chatColor }
+                : { alignSelf: 'flex-start', backgroundColor: userInfo.item.colorChat == "#000000" ? 'white' : userInfo.item.colorChat}
             return (
                 <TouchableWithoutFeedback /*onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}*/>
-                    <View style={[styles.message, addStyle, { backgroundColor: chatColor == "#000000" ? 'white' : chatColor}]}>
+                    <View style={[styles.message, addStyle]}>
                         <Text style={styles.textMessage}>{props.message}</Text>
                     </View>
                 </TouchableWithoutFeedback>
