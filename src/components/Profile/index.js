@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableWithoutFeedback, Modal } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, Modal, TouchableHighlight } from 'react-native';
 import styles from './styles'
 import { useNavigation } from '@react-navigation/native'
 import CameraComponent from '../camera';
@@ -22,16 +22,6 @@ const saveColorSelected = (color) => {
             });
         });
 }
-
-const Picker = () => (
-    <ColorPicker
-        style={{ flex: 1, width: 200 }}
-        hideSliders
-        onColorSelected={(color) => {
-            saveColorSelected(color);
-        }}
-    />
-)
 
 const DropDown = (props, defaultItem, height) => {
     return (
@@ -65,8 +55,20 @@ const Profile = (params) => {
         })
     }, []);
 
+    const Picker = () => (
+        <ColorPicker
+            style={{ flex: 1, width: 200 }}
+            hideSliders
+            defaultColor={user.colorChat}
+            onColorSelected={(color) => {
+                saveColorSelected(color);
+                setModalVisible(false);
+            }}
+        />
+    )
+
     return (
-        <>
+        <View>
             <View style={styles.container}>
                 <View>
                     <CameraComponent />
@@ -113,10 +115,10 @@ const Profile = (params) => {
                     <DropDown items={
 
                         [
-                            { label: 'Male', value: 2 },
-                            { label: 'Female', value: 1 },
+                            { label: 'Male', value: 1 },
+                            { label: 'Female', value: 2 },
                         ]
-                    } defaultItem={ 1 } />
+                    } defaultItem={1} />
                 </ListItem>
                 <ListItem bottomDivider style={styles.itemList}>
                     <SimpleLineIcons name="drop" size={24} color="black" />
@@ -136,8 +138,18 @@ const Profile = (params) => {
                     </ListItem.Content>
                     <Text>10/07/2017</Text>
                 </ListItem>
+                <TouchableHighlight onPress={() => {
+                    navigation.goBack();
+                }}>
+                    <ListItem bottomDivider style={styles.itemList}>
+                        <SimpleLineIcons name="arrow-left" size={24} color="black" />
+                        <ListItem.Content>
+                            <ListItem.Title>Go back</ListItem.Title>
+                        </ListItem.Content>
+                    </ListItem>
+                </TouchableHighlight>
             </View>
-        </>
+        </View>
     );
 }
 

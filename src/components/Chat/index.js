@@ -69,7 +69,7 @@ const Chat = (navigation) => {
 
 
         var messagesFetch = firebase.database().ref("conversations").orderByChild('chatNumber').equalTo(userInfo.item.numberChat + chatNumber);
-        console.log();
+
         const Message = (props) => {
             const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: chatColor == "#000000" ? 'white' : chatColor }
                 : { alignSelf: 'flex-start', backgroundColor: userInfo.item.colorChat == "#000000" ? 'white' : userInfo.item.colorChat}

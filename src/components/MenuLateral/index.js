@@ -3,6 +3,8 @@ import { Text } from 'react-native-paper'
 import styles from './styles'
 import { TouchableOpacity, View, SafeAreaView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
+import { ListItem } from 'react-native-elements';
+import { SimpleLineIcons } from '@expo/vector-icons';
 import * as firebase from 'firebase'
 import '@firebase/firestore'
 import 'firebase/database'
@@ -38,9 +40,50 @@ const MenuLateral = ({ navigation }) => {
                         <Text style={styles.textNombre}>{userInfo ? userInfo : ""}</Text>
                     </View>
                     {/*<Text style={styles.title}>20 - Argentina </Text>*/}
-                    <View style={styles.horizontalLine} />
                 </View>
                 <View>
+                    <TouchableOpacity onPress={() => {
+                        navi.navigate("Profile");
+                    }}>
+                        <ListItem bottomDivider topDivider style={styles.itemList}>
+                        <SimpleLineIcons name="user" size={24} color="black" />
+                        <ListItem.Content>
+                                <ListItem.Title>My profile</ListItem.Title>
+                        </ListItem.Content>
+                        </ListItem>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <ListItem bottomDivider style={styles.itemList}>
+                            <SimpleLineIcons name="bell" size={24} color="black" />
+                            <ListItem.Content>
+                                <ListItem.Title>Notifications</ListItem.Title>
+                            </ListItem.Content>
+                        </ListItem>
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <ListItem bottomDivider style={styles.itemList}>
+                            <SimpleLineIcons name="settings" size={24} color="black" />
+                            <ListItem.Content>
+                                <ListItem.Title>Options</ListItem.Title>
+                            </ListItem.Content>
+                        </ListItem>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {
+                        firebase.auth().signOut().then(function () {
+                            navigationA.navigate('Login');
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }}>
+                        <ListItem bottomDivider style={styles.itemList}>
+                            <SimpleLineIcons name="logout" size={24} color="black" />
+                            <ListItem.Content>
+                                <ListItem.Title>Sign Out</ListItem.Title>
+                            </ListItem.Content>
+                        </ListItem>
+                    </TouchableOpacity>
+
+                    {/*
                     <TouchableOpacity style={styles.menuButtons} onPress={() => {
                         navi.navigate("Profile", { ID: '-MNBO5oNQBX1rFHzo_wU'});
                     }}>
@@ -65,6 +108,7 @@ const MenuLateral = ({ navigation }) => {
                     }}>
                         <Text style={styles.cerrarSesionText}>Sign Out</Text>
                     </TouchableOpacity>
+                    */}
                 </View>
             </View>
         </SafeAreaView>

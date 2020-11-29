@@ -14,7 +14,7 @@ import 'firebase/firebase-database'
 const CameraComponent = (props) => {
 
     const currentUser = firebase.auth().currentUser;
-
+    const [image, setImage] = useState('');
     const selectOption = () => {
         if (ImagePicker.getCameraPermissionsAsync()) {
             Alert.alert(
@@ -84,7 +84,7 @@ const CameraComponent = (props) => {
             {
                 currentUser != null ?
                     <View>
-                        <ContactImage userId={currentUser.uid} styles={{ margin: 25, width: 200, height: 200, borderRadius: 200, borderWidth: 5, borderColor: 'white' }} />
+                        <ContactImage userId={currentUser.uid} image={ image } styles={{ margin: 25, width: 200, height: 200, borderRadius: 200, borderWidth: 5, borderColor: 'white' }} />
                     </View>
                     :
                     <></>

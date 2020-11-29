@@ -15,13 +15,6 @@ const styles = StyleSheet.create({
     colorPickerContainer: {
         position: "absolute",
     },
-    userPhoto: {
-        width: 200,
-        height: 200,
-        borderRadius: 100,
-        borderColor: 'white',
-        borderWidth: 5,
-    },
     userName: {
         color: colorText,
         fontSize: 30
@@ -32,12 +25,6 @@ const styles = StyleSheet.create({
     },
     userInfo: {
         color: colorText
-    },
-    listItem: {
-        display: 'flex',
-    },
-    itemList: {
-        marginVertical: 2,
     },
     dropDownContainer: {
         position: "absolute",
@@ -53,10 +40,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 10,
     },
     modalView: {
-        //margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,
         padding: 25,

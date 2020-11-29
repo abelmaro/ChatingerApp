@@ -9,10 +9,6 @@ const styles = StyleSheet.create({
     container: {
         marginBottom: 30
     },
-    btnSiguiente: {
-        backgroundColor: 'white',
-        padding: 10,
-    }
 });
 
 export default styles;

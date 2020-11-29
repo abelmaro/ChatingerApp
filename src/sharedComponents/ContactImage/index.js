@@ -10,19 +10,18 @@ const ContactImage = (props) => {
     useEffect(() => {
         let isCancelled = false;
 
-        firebase.database().ref('users').orderByChild('userId').equalTo(props.userId).once('value')
-            .then((snapshot) => {
-                snapshot.forEach((subSnapshot) => {
-                    setImage(subSnapshot.val().imageBase64)
-                });
+        firebase.database().ref('users').orderByChild('userId').equalTo(props.userId).on('value', (snapshot) => {
+            snapshot.forEach((subSnapshot) => {
+                setImage(subSnapshot.val().imageBase64)
             });
+        });
         return () => {
             isCancelled = true;
         };
     }, []);
     return (
         <Image style={props.styles} source={{ uri: `data:image/jpg;base64,${image}` }} />
-    );
+    )
 }
 
 export default ContactImage;
