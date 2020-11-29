@@ -10,8 +10,8 @@ import SignUp from './src/components/SignUp';
 import Profile from './src/components/Profile';
 import MenuLateral from './src/components/MenuLateral';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
+import * as Font from 'expo-font';
 import * as firebase from 'firebase';
-//import firebaseConfig from './databse/firebase';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -25,6 +25,10 @@ function CustomDrawerContent(props) {
         </DrawerContentScrollView>
     );
 }
+
+Font.loadAsync({
+    'Abel': require('./assets/fonts/Abel/Abel-Regular.ttf'),
+});
 
 var firebaseConfig = {
     apiKey: "AIzaSyBlK9ZsEyErji_dlYZ8JKucGGv-7mw-o3A",

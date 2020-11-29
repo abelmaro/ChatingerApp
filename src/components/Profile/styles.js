@@ -1,14 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-
-const colorText = '#d3e0d5';
-const fFamily = 'Roboto';
-const bgColor = '#262d31';
+import { Dimensions } from 'react-native';
+import main from '../../utils/mainCss/main';
 
 const styles = StyleSheet.create({
     container: {
         marginTop: getStatusBarHeight(),
-        backgroundColor: bgColor,
+        backgroundColor: main.bgColor,
         display: 'flex',
         alignItems: 'center',
     },
@@ -16,7 +14,7 @@ const styles = StyleSheet.create({
         position: "absolute",
     },
     userName: {
-        color: colorText,
+        color: main.colorText,
         fontSize: 30
     },
     infoContainer: {
@@ -24,12 +22,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     userInfo: {
-        color: colorText
+        color: main.colorText
     },
     dropDownContainer: {
         position: "absolute",
         display: "flex",
-        minWidth: 360,
+        minWidth: Dimensions.get('window').width,
         padding: 10,
         height: 40,
         justifyContent: 'center',
@@ -56,7 +54,11 @@ const styles = StyleSheet.create({
     modalText: {
         marginBottom: 15,
         textAlign: 'center',
-        fontSize: 20
+        fontSize: 20,
+        fontFamily: main.fFamily,
+    },
+    titleItem: {
+        fontFamily: main.fFamily,
     },
 });
 

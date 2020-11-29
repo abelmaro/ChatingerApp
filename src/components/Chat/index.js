@@ -5,19 +5,25 @@ import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
 import { useList } from "react-firebase-hooks/database";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ContactImage from '../../sharedComponents/ContactImage';
 import * as firebase from 'firebase'
 import 'firebase/database'
 import 'firebase/firebase-database'
 
+
+
 var currentUser = ''; /*= firebase.auth().currentUser != undefined ? firebase.auth().currentUser.uid : '';*/
+var chatNumber = 0;
+var chatColor = 'white';
+
+
 const generateId = () => {
     return Date.now() + Math.random();
 }
-var chatNumber = 0;
-var chatColor = 'white';
+
 const sendMessage = (message, toUser, userNumber) => {
+
+
     const db = firebase.database().ref('conversations');
     try {
         db.push({
@@ -43,6 +49,11 @@ const deleteMessage = (messageId) => {
                 firebase.database().ref(`conversations/${key}`).remove()
             });
     });
+}
+
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 const Chat = (navigation) => {
@@ -76,7 +87,7 @@ const Chat = (navigation) => {
             return (
                 <TouchableWithoutFeedback /*onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}*/>
                     <View style={[styles.message, addStyle]}>
-                        <Text style={styles.textMessage}>{props.message}</Text>
+                        <Text style={styles.textMessage}>{capitalizeFirstLetter(props.message)}</Text>
                     </View>
                 </TouchableWithoutFeedback>
             );
@@ -90,7 +101,7 @@ const Chat = (navigation) => {
                     <TouchableHighlight onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)} style={{zIndex: 100}}>
                         <ContactImage userId={userInfo.item.userId} styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white' }} />
                     </TouchableHighlight>
-                    <Text style={styles.text}>{userInfo.item.userName}</Text>
+                    <Text style={styles.text}>{capitalizeFirstLetter(userInfo.item.userName)}</Text>
                     <TouchableWithoutFeedback onPress={() => navigationDraw.goBack()}>
                         <AntDesign name="back" size={24} color="white" style={styles.icon} />
                     </TouchableWithoutFeedback>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableWithoutFeedback, Modal, TouchableHighlight } from 'react-native';
+import { View, Text, TouchableWithoutFeedback, Modal, TouchableHighlight, ScrollView } from 'react-native';
 import styles from './styles'
 import { useNavigation } from '@react-navigation/native'
 import CameraComponent from '../camera';
@@ -68,7 +68,7 @@ const Profile = (params) => {
     )
 
     return (
-        <View>
+        <ScrollView>
             <View style={styles.container}>
                 <View>
                     <CameraComponent />
@@ -100,7 +100,7 @@ const Profile = (params) => {
                 <ListItem bottomDivider style={styles.itemList}>
                     <SimpleLineIcons name="location-pin" size={24} color="black" />
                     <ListItem.Content>
-                        <ListItem.Title>Country</ListItem.Title>
+                        <ListItem.Title style={ styles.titleItem }>Country</ListItem.Title>
                     </ListItem.Content>
                     <DropDown items={
                         CountryList()
@@ -110,7 +110,7 @@ const Profile = (params) => {
                     <SimpleLineIcons name="user" size={24} color="black" />
                     {/*<SimpleLineIcons name="user-female" size={24} color="black" />*/}
                     <ListItem.Content>
-                        <ListItem.Title>Gender</ListItem.Title>
+                        <ListItem.Title style={styles.titleItem}>Gender</ListItem.Title>
                     </ListItem.Content>
                     <DropDown items={
 
@@ -123,7 +123,7 @@ const Profile = (params) => {
                 <ListItem bottomDivider style={styles.itemList}>
                     <SimpleLineIcons name="drop" size={24} color="black" />
                     <ListItem.Content>
-                        <ListItem.Title>Messages color</ListItem.Title>
+                        <ListItem.Title style={styles.titleItem}>Messages color</ListItem.Title>
                     </ListItem.Content>
                     <TouchableWithoutFeedback onLongPress={() => {
                         setModalVisible(true);
@@ -134,7 +134,7 @@ const Profile = (params) => {
                 <ListItem bottomDivider style={styles.itemList}>
                     <SimpleLineIcons name="calendar" size={24} color="black" />
                     <ListItem.Content>
-                        <ListItem.Title>Registration date</ListItem.Title>
+                        <ListItem.Title style={styles.titleItem}>Registration date</ListItem.Title>
                     </ListItem.Content>
                     <Text>10/07/2017</Text>
                 </ListItem>
@@ -144,12 +144,12 @@ const Profile = (params) => {
                     <ListItem bottomDivider style={styles.itemList}>
                         <SimpleLineIcons name="arrow-left" size={24} color="black" />
                         <ListItem.Content>
-                            <ListItem.Title>Go back</ListItem.Title>
+                            <ListItem.Title style={styles.titleItem}>Go back</ListItem.Title>
                         </ListItem.Content>
                     </ListItem>
                 </TouchableHighlight>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 

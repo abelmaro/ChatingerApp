@@ -10,6 +10,10 @@ import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 const MenuLateral = ({ navigation }) => {
     const navi = useNavigation();
     const user = firebase.auth().currentUser;
@@ -30,14 +34,17 @@ const MenuLateral = ({ navigation }) => {
         <SafeAreaView>
             <View style={[styles.container]}>
                 <View>
-                    <View style={{display: "flex", flexDirection: 'column', justifyContent: 'space-between', alignContent: "center", alignItems: 'center'}}>
+                    <View style={{
+                        display: "flex", flexDirection: 'column', justifyContent: 'space-between', alignContent: "center", alignItems: 'center'}}>
                         {
                             image ? 
-                            <Image source={{ uri: `data:image/jpg;base64,${image}` }} style={{ width: 230, height: 230, borderRadius: 200, borderWidth: 5, borderColor: 'black' }} />
+                                <Image source={{ uri: `data:image/jpg;base64,${image}` }} style={{
+                                    width: 230, height: 230, borderRadius: 200, borderWidth: 5, borderColor: 'white'
+                                }} />
                             : <></>
                         }
 
-                        <Text style={styles.textNombre}>{userInfo ? userInfo : ""}</Text>
+                        <Text style={styles.textNombre}>{userInfo ? capitalizeFirstLetter(userInfo) : ""}</Text>
                     </View>
                     {/*<Text style={styles.title}>20 - Argentina </Text>*/}
                 </View>
@@ -48,7 +55,7 @@ const MenuLateral = ({ navigation }) => {
                         <ListItem bottomDivider topDivider style={styles.itemList}>
                         <SimpleLineIcons name="user" size={24} color="black" />
                         <ListItem.Content>
-                                <ListItem.Title>My profile</ListItem.Title>
+                                <ListItem.Title style={styles.titleItem}>My profile</ListItem.Title>
                         </ListItem.Content>
                         </ListItem>
                     </TouchableOpacity>
@@ -56,7 +63,7 @@ const MenuLateral = ({ navigation }) => {
                         <ListItem bottomDivider style={styles.itemList}>
                             <SimpleLineIcons name="bell" size={24} color="black" />
                             <ListItem.Content>
-                                <ListItem.Title>Notifications</ListItem.Title>
+                                <ListItem.Title style={styles.titleItem}>Notifications</ListItem.Title>
                             </ListItem.Content>
                         </ListItem>
                     </TouchableOpacity>
@@ -64,7 +71,7 @@ const MenuLateral = ({ navigation }) => {
                         <ListItem bottomDivider style={styles.itemList}>
                             <SimpleLineIcons name="settings" size={24} color="black" />
                             <ListItem.Content>
-                                <ListItem.Title>Options</ListItem.Title>
+                                <ListItem.Title style={styles.titleItem}>Options</ListItem.Title>
                             </ListItem.Content>
                         </ListItem>
                     </TouchableOpacity>
@@ -78,11 +85,10 @@ const MenuLateral = ({ navigation }) => {
                         <ListItem bottomDivider style={styles.itemList}>
                             <SimpleLineIcons name="logout" size={24} color="black" />
                             <ListItem.Content>
-                                <ListItem.Title>Sign Out</ListItem.Title>
+                                <ListItem.Title style={styles.titleItem}>Sign Out</ListItem.Title>
                             </ListItem.Content>
                         </ListItem>
                     </TouchableOpacity>
-
                     {/*
                     <TouchableOpacity style={styles.menuButtons} onPress={() => {
                         navi.navigate("Profile", { ID: '-MNBO5oNQBX1rFHzo_wU'});

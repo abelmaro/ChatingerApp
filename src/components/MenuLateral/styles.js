@@ -1,8 +1,5 @@
 import { StyleSheet } from 'react-native';
-
-const colorText = '#d3e0d5';
-const fFamily = 'Roboto';
-const bgColor = '#262d31';
+import main from '../../utils/mainCss/main';
 
 const styles = StyleSheet.create({
     container: {
@@ -27,7 +24,6 @@ const styles = StyleSheet.create({
         color: '#353D4A',
         marginTop: 20,
         marginBottom: 20,
-        fontWeight: 'bold',
     },
     textNumero: {
         fontSize: 14,
@@ -44,13 +40,16 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         paddingVertical: 20,
         paddingHorizontal: 50,
-        backgroundColor: bgColor,
+        backgroundColor: main.bgColor,
         marginTop: 1,
         marginHorizontal: -20
     },
     cerrarSesionText: {
         color: 'white'
-    }
+    },
+    titleItem: {
+        fontFamily: main.fFamily
+    },
 });
 
 export default styles;

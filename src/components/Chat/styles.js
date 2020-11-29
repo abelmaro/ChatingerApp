@@ -1,15 +1,12 @@
 import { StyleSheet } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-
-const colorText = '#d3e0d5';
-const fFamily = 'Roboto';
-const bgColor = '#262d31';
+import main from '../../utils/mainCss/main';
 
 const styles = StyleSheet.create({
     container: {
         marginTop: getStatusBarHeight(),
         flex: 1,
-        backgroundColor: bgColor,
+        backgroundColor: main.bgColor,
         justifyContent: 'space-between'
     },
     header: {
@@ -27,9 +24,9 @@ const styles = StyleSheet.create({
         borderRadius: 100,
     },
     text: {
-        color: colorText,
-        fontFamily: fFamily,
-        fontSize: 25
+        color: main.colorText,
+        fontFamily: main.fFamily,
+        fontSize: 25,
     },
     icon: {
         borderRadius: 100,
@@ -52,7 +49,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 10,
         display: 'flex',
-        color: colorText,
+        color: main.colorText,
         fontSize: 16,
         backgroundColor: '#9a9a9a',
         fontWeight: 'bold',
@@ -67,6 +64,7 @@ const styles = StyleSheet.create({
     },
     textMessage: {
         fontWeight: 'bold',
+        fontFamily: main.fFamily,
     },
     centeredView: {
         flex: 1,

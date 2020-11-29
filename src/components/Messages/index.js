@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableWithoutFeedback, ScrollView, RefreshControl, ActivityIndicator,TouchableHighlight } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableWithoutFeedback, ScrollView, RefreshControl, ActivityIndicator,TouchableHighlight } from 'react-native';
 import styles from './styles'
 import { useNavigation, DrawerActions } from '@react-navigation/native'
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useList } from "react-firebase-hooks/database";
 import ContactImage from '../../sharedComponents/ContactImage';
-import { ListItem, Avatar } from 'react-native-elements';
+import { ListItem } from 'react-native-elements';
 import * as firebase from 'firebase'
 import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
 
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 var chatNumber = 0;
 const Messages = (navigation) => {
     const navigationA = useNavigation();
@@ -68,8 +72,8 @@ const Messages = (navigation) => {
                 <ListItem bottomDivider>
                     <ContactImage userId={props.item.val().userId} styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white' }} />
                     <ListItem.Content>
-                        <ListItem.Title>{props.item.val().userName}</ListItem.Title>
-                        <ListItem.Subtitle>Send a message</ListItem.Subtitle>
+                        <ListItem.Title style={styles.titleItem}>{capitalizeFirstLetter(props.item.val().userName)}</ListItem.Title>
+                        <ListItem.Subtitle style={styles.titleItem}>Send a message</ListItem.Subtitle>
                     </ListItem.Content>
                     <ListItem.Chevron />
                 </ListItem>
@@ -83,7 +87,7 @@ const Messages = (navigation) => {
                 <TouchableWithoutFeedback onPress={() => {
                     navigationA.dispatch(DrawerActions.openDrawer());
                 }}>
-                    <SimpleLineIcons name="menu" size={24} color="black" />
+                    <SimpleLineIcons name="menu" size={24} color="#d3e0d5" />
                 </TouchableWithoutFeedback>
                 <Text style={styles.appText}>
                     Chatinger
