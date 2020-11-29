@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, Image, TextInput, ScrollView, ActivityIndicator, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, TextInput, ScrollView, ActivityIndicator, Modal, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'; 
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +16,7 @@ const generateId = () => {
     return Date.now() + Math.random();
 }
 var chatNumber = 0;
+var chatColor = 'white';
 const sendMessage = (message, toUser, userNumber) => {
     const db = firebase.database().ref('conversations');
     console.log("CurrentUser: " + currentUser + "\nToUser: " + toUser);
@@ -64,19 +65,19 @@ const Chat = (navigation) => {
             .then((snapshot) => {
                 snapshot.forEach((subSnapshot) => {
                     chatNumber = subSnapshot.val().numberChat;
+                    chatColor = subSnapshot.val().colorChat;
                 });
             });
 
 
         var messagesFetch = firebase.database().ref("conversations").orderByChild('chatNumber').equalTo(userInfo.item.numberChat + chatNumber);
-        var messagesFetchInverse = firebase.database().ref("conversations").orderByChild('from_To').equalTo(userInfo.item.userId + '_' + currentUser);
 
         const Message = (props) => {
             const addStyle = props.own == true ? { alignSelf: 'flex-end' } : { alignSelf: 'flex-start' }
             return (
                 <TouchableWithoutFeedback /*onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}*/>
-                    <View style={[styles.message, addStyle]}>
-                        <Text>{props.message}</Text>
+                    <View style={[styles.message, addStyle, { backgroundColor: chatColor == "#000000" ? 'white' : chatColor}]}>
+                        <Text style={styles.textMessage}>{props.message}</Text>
                     </View>
                 </TouchableWithoutFeedback>
             );
@@ -87,9 +88,9 @@ const Chat = (navigation) => {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <TouchableWithoutFeedback onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)}>
+                    <TouchableHighlight onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)} style={{zIndex: 100}}>
                         <ContactImage userId={userInfo.item.userId} styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white' }} />
-                    </TouchableWithoutFeedback>
+                    </TouchableHighlight>
                     <Text style={styles.text}>{userInfo.item.userName}</Text>
                     <TouchableWithoutFeedback onPress={() => navigationDraw.goBack()}>
                         <AntDesign name="back" size={24} color="white" style={styles.icon} />

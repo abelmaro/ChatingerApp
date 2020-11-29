@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Permissions } from 'react-native-unimodules';
 import { useList } from "react-firebase-hooks/database";
 import ContactImage from '../../sharedComponents/ContactImage';
+import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 import '@firebase/firestore'
 import 'firebase/database'
@@ -79,18 +80,16 @@ const CameraComponent = (props) => {
     }
 
     return (
-        <View>
+        <View style={ styles.container}>
             {
                 currentUser != null ?
                     <View>
-                        <ContactImage userId={currentUser.uid} styles={{ width: 200, height: 200, borderRadius: 200, borderWidth: 5, borderColor: 'white' }} />
+                        <ContactImage userId={currentUser.uid} styles={{ margin: 25, width: 200, height: 200, borderRadius: 200, borderWidth: 5, borderColor: 'white' }} />
                     </View>
                     :
                     <></>
             }
-            <TouchableOpacity style={[styles.btnSiguiente, { backgroundColor: 'white', padding: 10 }]} onPress={() => selectOption()}>
-                <Text style={styles.textSiguiente}>Upload image</Text>
-            </TouchableOpacity>
+            <Button style={styles.btnSiguiente} onPress={() => selectOption()} title="Upload image" type="outline"/>
 
         </View>
     );

@@ -63,8 +63,10 @@ const styles = StyleSheet.create({
         marginHorizontal: 15,
         marginVertical: 2,
         padding: 10,
-        backgroundColor: colorText,
         borderRadius: 100,
+    },
+    textMessage: {
+        fontWeight: 'bold',
     },
     centeredView: {
         flex: 1,

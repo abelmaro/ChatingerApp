@@ -1,12 +1,12 @@
 {
   "ExpandedNodes": [
     "",
-    "\\databse",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\Messages",
-    "\\src\\components\\Tabs"
+    "\\src\\components\\Profile",
+    "\\src\\sharedComponents",
+    "\\src\\sharedComponents\\ContactImage"
   ],
-  "SelectedNode": "\\databse\\firebase.js",
+  "SelectedNode": "\\src\\components\\Profile\\index.js",
   "PreviewInSolutionExplorer": false
 }

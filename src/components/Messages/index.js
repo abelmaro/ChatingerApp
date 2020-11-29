@@ -5,16 +5,18 @@ import { useNavigation, DrawerActions } from '@react-navigation/native'
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useList } from "react-firebase-hooks/database";
 import ContactImage from '../../sharedComponents/ContactImage';
+import { ListItem, Avatar } from 'react-native-elements';
 import * as firebase from 'firebase'
 import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
+
 var chatNumber = 0;
 const Messages = (navigation) => {
     const navigationA = useNavigation();
     const [currentUid, setCurrentUid] = useState(0);
     const [users, setUsers] = useState([]);
-    const [snapshots, loading, error] = useList(firebase.database().ref(`users`));
+    var [snapshots, loading, error] = useList(firebase.database().ref(`users`));
     const [user, setUser] = useState('');
     const [message, setMessage] = useState('');
     const [refreshing, setRefreshing] = React.useState(false);
@@ -27,20 +29,6 @@ const Messages = (navigation) => {
             }
         }
     });
-
-    function removeDuplicates(originalArray, prop) {
-        var newArray = [];
-        var lookupObject = {};
-
-        for (var i in originalArray) {
-            lookupObject[originalArray[i][prop]] = originalArray[i];
-        }
-
-        for (i in lookupObject) {
-            newArray.push(lookupObject[i]);
-        }
-        return newArray;
-    }
 
     firebase.auth().onAuthStateChanged((user) => {
         if (!user) {
@@ -59,6 +47,7 @@ const Messages = (navigation) => {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
+        snapshots = [];
         wait(50).then(() => setRefreshing(false));
     }, []);
 
@@ -66,6 +55,26 @@ const Messages = (navigation) => {
         return new Promise(resolve => {
             setTimeout(resolve, timeout);
         });
+    };
+
+    const ContactChat = (props) => {
+        return (
+            <TouchableHighlight key={Math.random()} onPress={() => {
+                setUser(props.item.val().userName);
+                setMessage(props.item.val().userMessage);
+                props.item.val().currentUser = uid;
+                navigationA.navigate("Chat", { item: props.item.val(), UID: uid });
+            }}>
+                <ListItem bottomDivider>
+                    <ContactImage userId={props.item.val().userId} styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white' }} />
+                    <ListItem.Content>
+                        <ListItem.Title>{props.item.val().userName}</ListItem.Title>
+                        <ListItem.Subtitle>Send a message</ListItem.Subtitle>
+                    </ListItem.Content>
+                    <ListItem.Chevron />
+                </ListItem>
+            </TouchableHighlight>
+        )
     };
 
     return (
@@ -91,34 +100,12 @@ const Messages = (navigation) => {
             </View>
             <View>
             </View>
-            <ScrollView /*refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}*/>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 {
-                    
-                    removeDuplicates(snapshots, "userId").map(item => (
+                    loading ? <ActivityIndicator size="large" color="#FFF" /> :
+                    snapshots.map(item => (
                         item.val().userId != uid ?
-                            <TouchableHighlight key={Math.random()} onPress={() => {
-                                setUser(item.val().userName);
-                                setMessage(item.val().userMessage);
-                                item.val().currentUser = uid;
-                                navigationA.navigate("Chat", { item: item.val(), UID: uid });
-                            }}>
-                                <View style={styles.container} key={item.val().userId}>
-                                    <View style={styles.flowInfo}>
-                                        <View>
-                                            <ContactImage userId={item.val().userId} styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white'}}/>
-                                            
-                                        </View>
-                                        <View style={styles.test}>
-                                            <Text style={styles.text}>{item.val().userName}</Text>
-                                            <Text style={styles.text}>Send new message</Text>
-                                            
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <Text style={styles.text}>11:20</Text>
-                                    </View>
-                                </View>
-                            </TouchableHighlight>
+                            <ContactChat item={ item } />
                             : <></>
                     ))}
             </ScrollView>
