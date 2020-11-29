@@ -125,7 +125,7 @@ const Profile = (params) => {
                     <ListItem.Content>
                         <ListItem.Title>Messages color</ListItem.Title>
                     </ListItem.Content>
-                    <TouchableWithoutFeedback onPress={() => {
+                    <TouchableWithoutFeedback onLongPress={() => {
                         setModalVisible(true);
                     }}>
                         <View style={{ width: 27, height: 27, backgroundColor: 'red', borderRadius: 200 }}></View>
