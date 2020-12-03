@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     titleItem: {
-        fontFamily: main.fFamily
+        fontFamily: main.fFamily,
     },
 });
 

@@ -1,13 +1,15 @@
 {
   "ExpandedNodes": [
     "",
+    "\\assets",
+    "\\assets\\fonts",
+    "\\assets\\fonts\\Abel",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\Chat",
     "\\src\\components\\Messages",
-    "\\src\\components\\Profile",
-    "\\src\\utils"
+    "\\src\\utils",
+    "\\src\\utils\\mainCss"
   ],
-  "SelectedNode": "\\App.js",
+  "SelectedNode": "\\src\\utils\\mainCss\\main.js",
   "PreviewInSolutionExplorer": false
 }

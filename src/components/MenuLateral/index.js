@@ -46,7 +46,6 @@ const MenuLateral = ({ navigation }) => {
 
                         <Text style={styles.textNombre}>{userInfo ? capitalizeFirstLetter(userInfo) : ""}</Text>
                     </View>
-                    {/*<Text style={styles.title}>20 - Argentina </Text>*/}
                 </View>
                 <View>
                     <TouchableOpacity onPress={() => {

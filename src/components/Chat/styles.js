@@ -4,33 +4,40 @@ import main from '../../utils/mainCss/main';
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: getStatusBarHeight(),
+        marginTop: getStatusBarHeight() / 2,
         flex: 1,
         backgroundColor: main.bgColor,
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        overflow: 'hidden'
     },
     header: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'gray',
+        backgroundColor: main.bgWhite,
         padding: 10,
-        marginBottom: 10
+        marginBottom: 10,
+
+        elevation: 5,
     },
     userPhoto: {
-        width: 50,
-        height: 50,
-        borderRadius: 100,
+        width: 60,
+        height: 60,
+        borderRadius: 200,
+        borderWidth: 2,
+        borderColor: main.bgHeaderColor
     },
     text: {
         color: main.colorText,
         fontFamily: main.fFamily,
         fontSize: 25,
+        color: main.bgHeaderColor
     },
     icon: {
         borderRadius: 100,
-        borderColor: 'white',
+        borderColor: main.bgHeaderColor,
+        color: main.bgHeaderColor,
         padding: 5,
         borderWidth: 1
     },
@@ -39,8 +46,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'gray',
+        backgroundColor: main.bgWhite,
+        opacity: 0.8,
         padding: 10,
+        elevation: 5
     },
     messageInput: {
         height: 40,
@@ -51,7 +60,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         color: main.colorText,
         fontSize: 16,
-        backgroundColor: '#9a9a9a',
+        backgroundColor: 'rgba(52, 52, 52, 0.8)',
         fontWeight: 'bold',
         minWidth: '80%',
         maxWidth: 500,

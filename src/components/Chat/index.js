@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, Image, TextInput, ScrollView, ActivityIndicator, Modal, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, ImageBackground, TextInput, ScrollView, ActivityIndicator, Modal, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'; 
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native'
 import { useList } from "react-firebase-hooks/database";
 import ContactImage from '../../sharedComponents/ContactImage';
+import BackgroundImage from '../../../assets/backgroundChatWhite.jpg'
 import * as firebase from 'firebase'
 import 'firebase/database'
 import 'firebase/firebase-database'
@@ -83,7 +84,7 @@ const Chat = (navigation) => {
 
         const Message = (props) => {
             const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: chatColor == "#000000" ? 'white' : chatColor }
-                : { alignSelf: 'flex-start', backgroundColor: userInfo.item.colorChat == "#000000" ? 'white' : userInfo.item.colorChat}
+                : { alignSelf: 'flex-start', backgroundColor: userInfo.item.colorChat == "#000000" ? 'white' : userInfo.item.colorChat }
             return (
                 <TouchableWithoutFeedback /*onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}*/>
                     <View style={[styles.message, addStyle]}>
@@ -97,17 +98,18 @@ const Chat = (navigation) => {
 
         return (
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <TouchableHighlight onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)} style={{zIndex: 100}}>
-                        <ContactImage userId={userInfo.item.userId} styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white' }} />
-                    </TouchableHighlight>
-                    <Text style={styles.text}>{capitalizeFirstLetter(userInfo.item.userName)}</Text>
-                    <TouchableWithoutFeedback onPress={() => navigationDraw.goBack()}>
-                        <AntDesign name="back" size={24} color="white" style={styles.icon} />
-                    </TouchableWithoutFeedback>
-                </View>
-                <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
-                    {/*<View style={styles.centeredView}>
+                <ImageBackground source={BackgroundImage} style={styles.container}>
+                    <View style={styles.header}>
+                        <TouchableHighlight onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)} style={{ zIndex: 100 }}>
+                            <ContactImage userId={userInfo.item.userId} styles={styles.userPhoto} />
+                        </TouchableHighlight>
+                        <Text style={styles.text}>{capitalizeFirstLetter(userInfo.item.userName)}</Text>
+                        <TouchableWithoutFeedback onPress={() => navigationDraw.goBack()}>
+                            <AntDesign name="back" size={24} style={styles.icon} />
+                        </TouchableWithoutFeedback>
+                    </View>
+                    <ScrollView ref={scrollViewRef} onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
+                        {/*<View style={styles.centeredView}>
                         <Modal
                             animationType="slide"
                             transparent={true}
@@ -131,32 +133,33 @@ const Chat = (navigation) => {
 
                         </Modal>
                     </View>*/}
-                    {
-                        loading ? <ActivityIndicator size="large" color="#FFF" />
-                            :
-                            snapshots.map(message => {
-                                return (
-                                    <Message messageId={message.val().id} message={message.val().message} own={message.val().fromUser == currentUser} key={Math.random()} />
-                                )
-                            })
-                    }
-                </ScrollView>
-                <View style={styles.sendSection}>
-                    <TextInput style={styles.messageInput}
-                        onChangeText={text => onChangeText(text)}
-                        value={value} />
-                    <TouchableWithoutFeedback onPress={() => {
-                        if (value != '') {
-                            setMes(mes.concat({ id: Math.random(), own: true, message: value }))
-                            sendMessage(value, userInfo.UID, userInfo.item.numberChat + chatNumber)
-                        } else {
-                            <></>
+                        {
+                            loading ? <ActivityIndicator size="large" color="#FFF" />
+                                :
+                                snapshots.map(message => {
+                                    return (
+                                        <Message messageId={message.val().id} message={message.val().message} own={message.val().fromUser == currentUser} key={Math.random()} />
+                                    )
+                                })
                         }
-                        onChangeText('')
-                    }}>
-                        <Ionicons name="md-send" size={40} color="white" />
-                    </TouchableWithoutFeedback>
-                </View>
+                    </ScrollView>
+                    <View style={styles.sendSection}>
+                        <TextInput style={styles.messageInput}
+                            onChangeText={text => onChangeText(text)}
+                            value={value} />
+                        <TouchableWithoutFeedback onPress={() => {
+                            if (value != '') {
+                                setMes(mes.concat({ id: Math.random(), own: true, message: value }))
+                                sendMessage(value, userInfo.UID, userInfo.item.numberChat + chatNumber)
+                            } else {
+                                <></>
+                            }
+                            onChangeText('')
+                        }}>
+                            <Ionicons name="md-send" size={40} color={ chatColor} />
+                        </TouchableWithoutFeedback>
+                    </View>
+                </ImageBackground>
             </View>
         );
     }

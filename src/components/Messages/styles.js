@@ -9,17 +9,20 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 15,
-        backgroundColor: 'gray'
+        backgroundColor: main.bgWhite,
+        elevation: 7
     },
     appText: {
         fontSize: 25,
-        color: main.colorText,
+        color: main.bgHeaderColor,
         fontFamily: main.fFamily 
     },
     principal: {
         marginTop: getStatusBarHeight(),
         flex: 1,
-        backgroundColor: main.bgColor
+        backgroundColor: main.bgWhite, 
+        overflow: 'hidden',
+        paddingBottom: 5
     },
     container: {
         padding: 25,
@@ -28,7 +31,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         paddingHorizontal: 10,
         borderBottomColor: 'gray',
-        backgroundColor: main.bgColor,
+        backgroundColor: main.bgWhite,
         justifyContent: 'space-between',
     },
     flowInfo: {
@@ -49,10 +52,19 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     text: {
-        color: main.colorText
+        color: main.bgHeaderColor,
     },
     titleItem: {
         fontFamily: main.fFamily,
+        fontWeight: '900',
+        fontSize: 18
+    },
+    subtitleItem: {
+        fontFamily: main.fFamily,
+        fontSize: 16
+    },
+    icon: {
+        color: main.bgHeaderColor,
     },
 });
 
