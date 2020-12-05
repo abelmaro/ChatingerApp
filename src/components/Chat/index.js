@@ -65,7 +65,6 @@ const Chat = (navigation) => {
 
         var numberChat = contactInfo.numberChat + currentUser.numberChat;
         var colorChat = currentUser ? currentUser.colorChat : 'white';
-        console.log(numberChat)
         var messagesFetch = firebase.database().ref("conversations").orderByChild('numberChat').equalTo(numberChat);
 
         const Message = (props) => {

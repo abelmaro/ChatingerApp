@@ -25,8 +25,6 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
         borderRadius: 200,
-        borderWidth: 2,
-        borderColor: main.bgHeaderColor
     },
     text: {
         color: main.colorText,

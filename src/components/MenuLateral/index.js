@@ -34,7 +34,6 @@ const MenuLateral = () => {
             getCurrentUser();
         }
         const unsubscribe = navi.addListener('focus', () => {
-            console.log("New add");
             getCurrentUser();
         });
         return unsubscribe;

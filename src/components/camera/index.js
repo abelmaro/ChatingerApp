@@ -11,6 +11,8 @@ import '@firebase/firestore'
 import 'firebase/database'
 import 'firebase/firebase-database'
 
+
+
 const CameraComponent = (props) => {
     const [image, setImage] = useState('');
     const user = props.user;
@@ -54,7 +56,7 @@ const CameraComponent = (props) => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
             base64: true
         });
@@ -95,7 +97,7 @@ const CameraComponent = (props) => {
             {
                 user != null ?
                     <View>
-                        <ContactImage userId={user.userId} image={ image } styles={{ margin: 25, width: 200, height: 200, borderRadius: 200, borderWidth: 5, borderColor: 'white' }} />
+                        <ContactImage userId={user.userId} image={ image } styles={{ margin: 25, width: 200, height: 200, borderRadius: 200 }} />
                     </View>
                     :
                     <></>

@@ -77,7 +77,7 @@ const Messages = (navigation) => {
                 navigationA.navigate("Chat", { item: props.item.val(), currentUser: user });
             }}>
                 <ListItem bottomDivider>
-                    <ContactImage userId={props.item.val().userId} image={props.item.val().imageBase64 } styles={{ width: 60, height: 60, borderRadius: 200, borderWidth: 2, borderColor: 'white' }} />
+                    <ContactImage userId={props.item.val().userId} image={props.item.val().imageBase64 } styles={{ width: 60, height: 60, borderRadius:200}} />
                     <ListItem.Content>
                         <ListItem.Title style={styles.titleItem}>{capitalizeFirstLetter(props.item.val().userName)}</ListItem.Title>
                         <ListItem.Subtitle style={styles.subtitleItem}>Send a message</ListItem.Subtitle>
