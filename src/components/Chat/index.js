@@ -11,33 +11,25 @@ import * as firebase from 'firebase'
 import 'firebase/database'
 import 'firebase/firebase-database'
 
-
-
-var currentUser = ''; /*= firebase.auth().currentUser != undefined ? firebase.auth().currentUser.uid : '';*/
-var chatNumber = 0;
-var chatColor = 'white';
-
-
 const generateId = () => {
     return Date.now() + Math.random();
 }
 
-const sendMessage = (message, toUser, userNumber) => {
-
-
+const sendMessage = (message, toUser, userNumber, currentUser) => {
     const db = firebase.database().ref('conversations');
     try {
         db.push({
             id: generateId(),
-            fromUser: currentUser,
+            fromUser: currentUser.userId,
             toUser: toUser,
             message: message,
             date: Date.now(),
-            from_To: currentUser + '_' + toUser,
-            to_from: toUser + '_' + currentUser,
-            chatNumber: userNumber
+            from_To: currentUser.userId + '_' + toUser,
+            to_from: toUser + '_' + currentUser.userId,
+            numberChat: userNumber
         });
     } catch (e) {
+        alert(e);
         console.log(e);
     }
 }
@@ -58,33 +50,27 @@ function capitalizeFirstLetter(string) {
 }
 
 const Chat = (navigation) => {
-    console.clear()
     const navigationDraw = useNavigation();
     if (navigation.route.params == null) {
         navigationDraw.navigate('Login');
     } else {
-        const userInfo = navigation.route.params;
-        currentUser = userInfo.UID;
+        const contactInfo = navigation.route.params.item;
+        const currentUser = navigation.route.params.currentUser;
         const messages = [];
         const [mes, setMes] = useState(messages);
         const [value, onChangeText] = useState('');
-        const [modalVisible, setModalVisible] = useState(false);
         const scrollViewRef = useRef();
         const [messageInfo, setMessageInfo] = useState({});
-        firebase.database().ref('users').orderByChild('userId').equalTo(currentUser).once("value")
-            .then((snapshot) => {
-                snapshot.forEach((subSnapshot) => {
-                    chatNumber = subSnapshot.val().numberChat;
-                    chatColor = subSnapshot.val().colorChat;
-                });
-            });
+        const [modalVisible, setModalVisible] = useState(false);
 
-
-        var messagesFetch = firebase.database().ref("conversations").orderByChild('chatNumber').equalTo(userInfo.item.numberChat + chatNumber);
+        var numberChat = contactInfo.numberChat + currentUser.numberChat;
+        var colorChat = currentUser ? currentUser.colorChat : 'white';
+        console.log(numberChat)
+        var messagesFetch = firebase.database().ref("conversations").orderByChild('numberChat').equalTo(numberChat);
 
         const Message = (props) => {
-            const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: chatColor == "#000000" ? 'white' : chatColor }
-                : { alignSelf: 'flex-start', backgroundColor: userInfo.item.colorChat == "#000000" ? 'white' : userInfo.item.colorChat }
+            const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: colorChat == "#000000" ? 'white' : colorChat }
+                : { alignSelf: 'flex-start', backgroundColor: contactInfo.colorChat == "#000000" ? 'white' : contactInfo.colorChat }
             return (
                 <TouchableWithoutFeedback /*onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}*/>
                     <View style={[styles.message, addStyle]}>
@@ -100,10 +86,10 @@ const Chat = (navigation) => {
             <View style={styles.container}>
                 <ImageBackground source={BackgroundImage} style={styles.container}>
                     <View style={styles.header}>
-                        <TouchableHighlight onPress={() => navigationDraw.navigate('ContactProfile', userInfo.item)} style={{ zIndex: 100 }}>
-                            <ContactImage userId={userInfo.item.userId} styles={styles.userPhoto} />
+                        <TouchableHighlight onPress={() => navigationDraw.navigate('ContactProfile', contactInfo)} style={{ zIndex: 100 }}>
+                            <ContactImage userId={contactInfo.userId} image={ contactInfo.imageBase64 } styles={styles.userPhoto} />
                         </TouchableHighlight>
-                        <Text style={styles.text}>{capitalizeFirstLetter(userInfo.item.userName)}</Text>
+                        <Text style={styles.text}>{capitalizeFirstLetter(contactInfo.userName)}</Text>
                         <TouchableWithoutFeedback onPress={() => navigationDraw.goBack()}>
                             <AntDesign name="back" size={24} style={styles.icon} />
                         </TouchableWithoutFeedback>
@@ -138,7 +124,7 @@ const Chat = (navigation) => {
                                 :
                                 snapshots.map(message => {
                                     return (
-                                        <Message messageId={message.val().id} message={message.val().message} own={message.val().fromUser == currentUser} key={Math.random()} />
+                                        <Message messageId={message.val().id} message={message.val().message} own={message.val().fromUser == currentUser.userId} key={Math.random()} />
                                     )
                                 })
                         }
@@ -150,13 +136,13 @@ const Chat = (navigation) => {
                         <TouchableWithoutFeedback onPress={() => {
                             if (value != '') {
                                 setMes(mes.concat({ id: Math.random(), own: true, message: value }))
-                                sendMessage(value, userInfo.UID, userInfo.item.numberChat + chatNumber)
+                                sendMessage(value, contactInfo.userId, numberChat, currentUser)
                             } else {
                                 <></>
                             }
                             onChangeText('')
                         }}>
-                            <Ionicons name="md-send" size={40} color={ chatColor} />
+                            <Ionicons name="md-send" size={40} color={colorChat} />
                         </TouchableWithoutFeedback>
                     </View>
                 </ImageBackground>

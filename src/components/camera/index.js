@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Platform, Alert, Image} from 'react-native';
+import { View, Platform, Alert, Text } from 'react-native';
 import styles from './styles'
 import * as ImagePicker from 'expo-image-picker';
 import { Permissions } from 'react-native-unimodules';
-import { useList } from "react-firebase-hooks/database";
 import ContactImage from '../../sharedComponents/ContactImage';
 import { Button } from 'react-native-elements';
 import * as firebase from 'firebase';
@@ -12,9 +11,9 @@ import 'firebase/database'
 import 'firebase/firebase-database'
 
 const CameraComponent = (props) => {
-
-    const currentUser = firebase.auth().currentUser;
     const [image, setImage] = useState('');
+    const user = props.user;
+
     const selectOption = () => {
         if (ImagePicker.getCameraPermissionsAsync()) {
             Alert.alert(
@@ -46,20 +45,19 @@ const CameraComponent = (props) => {
 
         if (!result.cancelled) {
             let b64ToSave = removeDataImage(result.base64);
-            if (currentUser != null) {
-                uploadFirebase(currentUser.uid, b64ToSave);
+            if (user != null) {
+                uploadFirebase(user.uid, b64ToSave);
             }
         }
     }
 
     const uploadFirebase = (userId, b64) => {
-        console.log(userId + '\n' + b64)
         firebase.database().ref('users').orderByChild('userId').equalTo(userId).once('value')
             .then((snapshot) => {
                 snapshot.forEach((subSnapshot) => {
                     let key = subSnapshot.key;
                     firebase.database().ref(`users/${key}`).child('imageBase64').set(removeDataImage(b64)).then(error => console.log(error));
-                    setImage(removeDataImage(b64))
+                    //TODO: Update imageBase64 value from AsyncStorage
                 });
             });
     }
@@ -75,16 +73,12 @@ const CameraComponent = (props) => {
         }
     };
 
-    const B64Formatter = (props) => {
-        return <props.b64Path />
-    }
-
     return (
-        <View style={ styles.container}>
+        <View style={ styles.container} >
             {
-                currentUser != null ?
+                user != null ?
                     <View>
-                        <ContactImage userId={currentUser.uid} image={ image } styles={{ margin: 25, width: 200, height: 200, borderRadius: 200, borderWidth: 5, borderColor: 'white' }} />
+                        <ContactImage userId={user.uid} image={ user.imageBase64 } styles={{ margin: 25, width: 200, height: 200, borderRadius: 200, borderWidth: 5, borderColor: 'white' }} />
                     </View>
                     :
                     <></>

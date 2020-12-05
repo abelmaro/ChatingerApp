@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import styles from './styles';
-import { TouchableHighlight } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native'
-import Logo from '../../../assets/logo.png';
 import * as firebase from 'firebase'
 import '@firebase/firestore'
 import 'firebase/database'
@@ -33,7 +32,6 @@ const SignUp = () => {
                     gender: '',
                     userId: user.user.uid,
                     userName: user.user.email.split("@")[0],
-                    userPhoto: 'https://freepikpsd.com/wp-content/uploads/2019/10/default-profile-pic-png-5-Transparent-Images.png',
                     numberChat: Math.round(Date.now() + Math.random()),
                     colorChat: '',
                     tableKey: ''
@@ -41,15 +39,17 @@ const SignUp = () => {
                 }).then(() => {
                     firebase.database().ref('users').orderByChild('userId').equalTo(newUser.user.uid).once('value')
                         .then((snapshot) => {
-                            snapshot.forEach((subSnapshot) => {
+                            snapshot.forEach(async(subSnapshot) => {
                                 if (subSnapshot != null) {
                                     const tableKey = Object.keys(snapshot.val())[0];
-                                    console.log(tableKey);
                                     firebase.database().ref(`users/${subSnapshot.key}`).child('tableKey').set(tableKey);
+                                    await AsyncStorage.setItem('@user_info', JSON.stringify(subSnapshot));
+                                    await AsyncStorage.getItem('@user_info').then(user_info => {
+                                        navigation.navigate('Messages', user_info);
+                                    });
                                 }
                             });
                         });
-                    navigation.navigate('Messages');
                 });
             }).catch(function (error) {
                 var errorCode = error.code;

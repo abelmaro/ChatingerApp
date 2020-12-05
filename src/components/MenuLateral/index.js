@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Text } from 'react-native-paper'
 import styles from './styles'
-import { TouchableOpacity, View, SafeAreaView, Image } from 'react-native'
+import { TouchableOpacity, View, SafeAreaView, Image, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { ListItem } from 'react-native-elements';
 import { SimpleLineIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as firebase from 'firebase'
 import '@firebase/firestore'
 import 'firebase/database'
@@ -14,21 +15,30 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const MenuLateral = ({ navigation }) => {
+const MenuLateral = () => {
     const navi = useNavigation();
-    const user = firebase.auth().currentUser;
-    const [image, setImage] = useState(null);
-    const [userInfo, setUserInfo] = useState(null);
+    const [user, setUser] = useState(null);
+    const [fetched, setFetched] = useState(false);
 
+    //useEffect(() => {
+    //    firebase.database().ref('users').orderByChild('userId').equalTo(user.uid).once('value')
+    //        .then((snapshot) => {
+    //            snapshot.forEach((subSnapshot) => {
+    //                setImage(subSnapshot.val().imageBase64)
+    //                setUserInfo(subSnapshot.val().userName);
+    //            });
+    //        });
+    //});
     useEffect(() => {
-        firebase.database().ref('users').orderByChild('userId').equalTo(user.uid).once('value')
-            .then((snapshot) => {
-                snapshot.forEach((subSnapshot) => {
-                    setImage(subSnapshot.val().imageBase64)
-                    setUserInfo(subSnapshot.val().userName);
-                });
-            });
-    });
+        if (!fetched) {
+            getCurrentUser();
+        }
+    }, []);
+    async function getCurrentUser() {
+        const jsonValue = await AsyncStorage.getItem('@user_info');
+        setUser(jsonValue != null ? JSON.parse(jsonValue) : null);
+        setFetched(true);
+    }
 
     return (
         <SafeAreaView>
@@ -37,19 +47,21 @@ const MenuLateral = ({ navigation }) => {
                     <View style={{
                         display: "flex", flexDirection: 'column', justifyContent: 'space-between', alignContent: "center", alignItems: 'center'}}>
                         {
-                            image ? 
-                                <Image source={{ uri: `data:image/jpg;base64,${image}` }} style={{
+                            user ? 
+                                <Image source={{ uri: `data:image/jpg;base64,${user.imageBase64}` }} style={{
                                     width: 230, height: 230, borderRadius: 200, borderWidth: 5, borderColor: 'white'
                                 }} />
-                            : <></>
+                                : <ActivityIndicator size="large" color="#FFF" style={{
+                                    width: 230, height: 230
+                                }}/>
                         }
 
-                        <Text style={styles.textNombre}>{userInfo ? capitalizeFirstLetter(userInfo) : ""}</Text>
+                        <Text style={styles.textNombre}>{user ? capitalizeFirstLetter(user.userName) : ""}</Text>
                     </View>
                 </View>
                 <View>
                     <TouchableOpacity onPress={() => {
-                        navi.navigate("Profile");
+                        navi.navigate("Profile", user);
                     }}>
                         <ListItem bottomDivider topDivider style={styles.itemList}>
                         <SimpleLineIcons name="user" size={24} color="black" />

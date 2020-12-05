@@ -1,9 +1,8 @@
-import React, { useState, Component, useReducer } from 'react';
+import React from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 import styles from './styles';
-import { TouchableHighlight } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
-import Logo from '../../../assets/logo.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as firebase from 'firebase';
 import 'firebase/database'
 import 'firebase/firebase-database'
@@ -14,20 +13,30 @@ const Login = () => {
     const [password, setPassword] = React.useState('');
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-            const userRelevantData = {
-                uid: user.uid,
-            }
-            navigation.navigate('Messages', userRelevantData);
+            firebase.database().ref('users').orderByChild('userId').equalTo(user.uid).once('value')
+                .then((snapshot) => {
+                    snapshot.forEach(async (subSnapshot) => {
+                        await AsyncStorage.setItem('@user_info', JSON.stringify(subSnapshot));
+                        await AsyncStorage.getItem('@user_info').then(user_info => {
+                            navigation.navigate('Messages', user_info);
+                        });
+                    });
+                }).catch(error => console.log(error));
         }
     });
     const handleLogin = () => {
         firebase.auth().signInWithEmailAndPassword(username, password);
-        firebase.auth().onAuthStateChanged((user) => {
+        firebase.auth().onAuthStateChanged(async(user) => {
             if (user) {
-                const userRelevantData = {
-                    uid: user.uid,
-                }
-                navigation.navigate('Messages', userRelevantData);
+                firebase.database().ref('users').orderByChild('userId').equalTo(user.uid).once('value')
+                    .then((snapshot) => {
+                        snapshot.forEach(async(subSnapshot) => {
+                            await AsyncStorage.setItem('@user_info', JSON.stringify(subSnapshot));
+                            await AsyncStorage.getItem('@user_info').then(user_info => {
+                                navigation.navigate('Messages', user_info);
+                            });
+                        });
+                    });
             }
             else {
                 navigation.navigate('Login');
@@ -43,14 +52,14 @@ const Login = () => {
                     value={username}
                     placeholder="Email"
                     onChangeText={setUsername}
-                    placeholderTextColor="white">
+                    placeholderTextColor="#9a9a9a">
                 </TextInput>
                 <TextInput style={styles.input}
                     value={password}
                     placeholder="Password"
                     onChangeText={setPassword}
                     secureTextEntry
-                    placeholderTextColor="white" >
+                    placeholderTextColor="#9a9a9a" >
                 </TextInput>
                 
             </View>

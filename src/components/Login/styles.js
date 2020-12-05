@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly'
     },
     welcome: {
-        color: main.colorText,
+        color: main.bgHeaderColor,
         fontWeight: 'bold',
         fontSize: 50,
     },
@@ -24,9 +24,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
         borderWidth: 1,
         borderRadius: 10,
-        borderColor: 'white',
-        fontSize: 15,
-        color: 'white'
+        borderColor: main.bgHeaderColor,
+        fontSize: 20,
+        color: 'black',
     },
     btnLogin: {
         padding: 10,

@@ -32,28 +32,15 @@ const DropDown = (props, defaultItem, height) => {
                 containerStyle={{ height: 30, width: 120 }}
                 style={{ backgroundColor: '#fafafa' }}
                 dropDownStyle={{ backgroundColor: '#FFF', position: "absolute", zIndex: 100 }}
-                //onChangeItem={item => console.log(item.label, item.value)}
             />
         </View>
     )
 }
 
-const Profile = (params) => {
-    const currentUser = firebase.auth().currentUser;
+const Profile = (props) => {
     const navigation = useNavigation();
-    var [user, setUser] = useState({});
-    const [value, setValue] = useState(0);
+    const user = props.route.params;
     const [modalVisible, setModalVisible] = useState(false);
-
-    useEffect(() => {
-        firebase.database().ref('users').orderByChild('userId').equalTo(currentUser.uid).on('value', (snapshot) => {
-            if (snapshot) {
-                snapshot.forEach((subSnapshot) => {
-                    setUser(subSnapshot.val())
-                });
-            }
-        })
-    }, []);
 
     const Picker = () => (
         <ColorPicker
@@ -71,7 +58,7 @@ const Profile = (params) => {
         <ScrollView>
             <View style={styles.container}>
                 <View>
-                    <CameraComponent />
+                    <CameraComponent user={user} />
                 </View>
             </View>
             <View style={styles.centeredView}>
@@ -104,7 +91,7 @@ const Profile = (params) => {
                     </ListItem.Content>
                     <DropDown items={
                         CountryList()
-                    } defaultItem={"ARG"} />
+                    } defaultItem={user.country} />
                 </ListItem>
                 <ListItem bottomDivider style={styles.itemList}>
                     <SimpleLineIcons name="user" size={24} color="black" />
