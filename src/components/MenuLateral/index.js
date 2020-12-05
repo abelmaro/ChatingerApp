@@ -33,7 +33,12 @@ const MenuLateral = () => {
         if (!fetched) {
             getCurrentUser();
         }
-    }, []);
+        const unsubscribe = navi.addListener('focus', () => {
+            console.log("New add");
+            getCurrentUser();
+        });
+        return unsubscribe;
+    }, [navi]);
     async function getCurrentUser() {
         const jsonValue = await AsyncStorage.getItem('@user_info');
         setUser(jsonValue != null ? JSON.parse(jsonValue) : null);

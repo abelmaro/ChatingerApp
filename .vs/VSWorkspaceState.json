@@ -4,11 +4,13 @@
     "\\config",
     "\\src",
     "\\src\\components",
-    "\\src\\components\\Login",
+    "\\src\\components\\camera",
     "\\src\\components\\Messages",
+    "\\src\\sharedComponents",
+    "\\src\\sharedComponents\\ContactImage",
     "\\src\\utils",
     "\\src\\utils\\mainCss"
   ],
-  "SelectedNode": "\\src\\components\\Login\\index.js",
+  "SelectedNode": "\\src\\components\\Messages\\index.js",
   "PreviewInSolutionExplorer": false
 }
