@@ -7,7 +7,7 @@ import * as firebase from 'firebase';
 import 'firebase/database'
 import 'firebase/firebase-database'
 
-const Login = () => {
+const Login = (props) => {
     const navigation = useNavigation();
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
@@ -22,6 +22,12 @@ const Login = () => {
                         });
                     });
                 }).catch(error => console.log(error));
+            firebase.database().ref('users').orderByChild('userId').equalTo(user.uid).once('value')
+                .then((snapshot) => {
+                    snapshot.forEach((subSnapshot) => {
+                        firebase.database().ref(`users/${subSnapshot.key}`).child('status').set('active');
+                    });
+                });
         }
     });
     const handleLogin = () => {
@@ -49,13 +55,13 @@ const Login = () => {
             <Image source={require('../../../assets/logo.png')} style={{width:150, height: 150}} />
             <View>
                 <TextInput style={styles.input}
-                    value={username}
+                    value={props.route.params != null ? props.route.params.username : username}
                     placeholder="Email"
                     onChangeText={setUsername}
                     placeholderTextColor="#9a9a9a">
                 </TextInput>
                 <TextInput style={styles.input}
-                    value={password}
+                    value={props.route.params != null ? props.route.params.password : password}
                     placeholder="Password"
                     onChangeText={setPassword}
                     secureTextEntry

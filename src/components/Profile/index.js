@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableWithoutFeedback, Modal, TouchableHighlight, ScrollView } from 'react-native';
+import { View, Text, Picker, TouchableWithoutFeedback, Modal, TouchableHighlight, ScrollView } from 'react-native';
 import styles from './styles'
 import { useNavigation } from '@react-navigation/native'
 import CameraComponent from '../camera';
@@ -10,45 +10,96 @@ import 'firebase/firebase-database'
 import { ColorPicker } from 'react-native-color-picker'
 import { ListItem } from 'react-native-elements';
 import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
-import DropDownPicker from 'react-native-dropdown-picker';
 import CountryList from '../../../src/utils/countryList';
-
-const saveColorSelected = (color) => {
-    const userId = firebase.auth().currentUser.uid;
-    firebase.database().ref('users').orderByChild('userId').equalTo(userId).once('value')
-        .then((snapshot) => {
-            snapshot.forEach((subSnapshot) => {
-                firebase.database().ref(`users/${subSnapshot.key}`).child('colorChat').set(color).then(error => console.log(error));
-            });
-        });
-}
-
-const DropDown = (props, defaultItem, height) => {
-    return (
-        <View style={styles.dropDownContainer}>
-            <DropDownPicker
-                items={props.items}
-                defaultValue={props.defaultItem}
-                containerStyle={{ height: 30, width: 120 }}
-                style={{ backgroundColor: '#fafafa' }}
-                dropDownStyle={{ backgroundColor: '#FFF', position: "absolute", zIndex: 100 }}
-            />
-        </View>
-    )
-}
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = (props) => {
     const navigation = useNavigation();
     const user = props.route.params;
+    const [colorC, setColorC] = useState('');
+    const [country, setCountry] = useState(user.country);
+    const [gender, setGender] = useState(user.gender);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const Picker = () => (
+    useEffect(() => {
+        return () => {}
+    }, []);
+
+    const CountryDropDown = (props, defaultItem, height) => {
+        return (
+            <Picker selectedValue={country} style={{ height: 50, width: 120}}
+                onValueChange={(itemValue) => {
+                    setCountry(itemValue)
+                    updateStorageValue(itemValue, "country")
+                }}
+                key={"CountryDropdown"}>
+                {
+                    CountryList().map((country) => {
+                        return <Picker.Item label={country.label} value={country.value} key={country.value}/>
+                    })
+                }
+            </Picker>
+        )
+    }
+
+    const GenderDropDown = (props, defaultItem, height) => {
+        return (
+            <Picker selectedValue={gender} style={{ height: 50, width: 120 }}
+                selectedValue={gender}
+                onValueChange={(itemValue) => {
+                    setGender(itemValue)
+                    updateStorageValue(itemValue, "gender")
+                }}
+                key={"GenderPicker"}>
+                <Picker.Item label="Male" value="male" key="male" />
+                <Picker.Item label="Female" value="female" key="female" />
+            </Picker>
+        )
+    }
+
+    const updateStorageValue = async (value, property) => {
+        await AsyncStorage.getItem("@user_info")
+            .then(async (data) => {
+                data = JSON.parse(data);
+                data[property] = value;
+                switch (property) {
+                    case "colorChat":
+                        setColorC(value);
+                        saveSelected(value, "colorChat")
+                        return;
+                    case "country":
+                        setCountry(value);
+                        saveSelected(value, "country")
+                        return;
+                    case "gender":
+                        setGender(value);
+                        saveSelected(value, "gender")
+                        return;
+                    default:
+                }
+                await AsyncStorage.mergeItem('@user_info', JSON.stringify(data));
+            }).done();
+    }
+
+    const saveSelected = (value, property) => {
+        const userId = firebase.auth().currentUser.uid;
+        firebase.database().ref('users').orderByChild('userId').equalTo(userId).once('value')
+            .then((snapshot) => {
+                snapshot.forEach((subSnapshot) => {
+                    firebase.database().ref(`users/${subSnapshot.key}`).child(property).set(value);
+                });
+            });
+    }
+
+    const ColorPickerUI = () => (
         <ColorPicker
             style={{ flex: 1, width: 200 }}
             hideSliders
-            defaultColor={user.colorChat}
+            defaultColor={colorC}
             onColorSelected={(color) => {
-                saveColorSelected(color);
+                updateStorageValue(color, "colorChat");
+                setColorC(color);
+
                 setModalVisible(false);
             }}
         />
@@ -71,8 +122,8 @@ const Profile = (props) => {
                     }}>
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                            <Text style={styles.modalText}>{'Select new color!'}</Text>
-                            <Picker />
+                            <Text style={styles.modalText}>{'Move and touch to\n select new color!'}</Text>
+                            <ColorPickerUI />
                             <View style={{ display: 'flex', flexDirection: 'row', width: 80, alignItems: 'center', alignContent: 'center', justifyContent: 'center' }}>
                                 <TouchableWithoutFeedback onPress={() => { setModalVisible(false) }}>
                                     <Ionicons name="ios-close-circle-outline" size={35} color="black" />
@@ -89,7 +140,7 @@ const Profile = (props) => {
                     <ListItem.Content>
                         <ListItem.Title style={ styles.titleItem }>Country</ListItem.Title>
                     </ListItem.Content>
-                    <DropDown items={
+                    <CountryDropDown items={
                         CountryList()
                     } defaultItem={user.country} />
                 </ListItem>
@@ -99,13 +150,7 @@ const Profile = (props) => {
                     <ListItem.Content>
                         <ListItem.Title style={styles.titleItem}>Gender</ListItem.Title>
                     </ListItem.Content>
-                    <DropDown items={
-
-                        [
-                            { label: 'Male', value: 1 },
-                            { label: 'Female', value: 2 },
-                        ]
-                    } defaultItem={1} />
+                    <GenderDropDown />
                 </ListItem>
                 <ListItem bottomDivider style={styles.itemList}>
                     <SimpleLineIcons name="drop" size={24} color="black" />
@@ -115,7 +160,7 @@ const Profile = (props) => {
                     <TouchableWithoutFeedback onLongPress={() => {
                         setModalVisible(true);
                     }}>
-                        <View style={{ width: 27, height: 27, backgroundColor: user == null ? 'black' : user["colorChat"], borderRadius: 200, borderWidth: 1, borderColor: 'black' }}></View>
+                        <View style={{ width: 27, height: 27, backgroundColor: user == null ? 'black' : colorC, borderRadius: 200, borderWidth: 1, borderColor: 'black' }}></View>
                     </TouchableWithoutFeedback>
                 </ListItem>
                 <ListItem bottomDivider style={styles.itemList}>

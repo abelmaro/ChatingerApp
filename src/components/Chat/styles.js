@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     userPhoto: {
         width: 60,
         height: 60,
-        borderRadius: 200,
+        borderRadius: 500,
     },
     text: {
         color: main.colorText,

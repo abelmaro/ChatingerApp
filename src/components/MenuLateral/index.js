@@ -20,15 +20,6 @@ const MenuLateral = () => {
     const [user, setUser] = useState(null);
     const [fetched, setFetched] = useState(false);
 
-    //useEffect(() => {
-    //    firebase.database().ref('users').orderByChild('userId').equalTo(user.uid).once('value')
-    //        .then((snapshot) => {
-    //            snapshot.forEach((subSnapshot) => {
-    //                setImage(subSnapshot.val().imageBase64)
-    //                setUserInfo(subSnapshot.val().userName);
-    //            });
-    //        });
-    //});
     useEffect(() => {
         if (!fetched) {
             getCurrentUser();
@@ -52,9 +43,17 @@ const MenuLateral = () => {
                         display: "flex", flexDirection: 'column', justifyContent: 'space-between', alignContent: "center", alignItems: 'center'}}>
                         {
                             user ? 
+                                <View style={{
+                                    borderRadius: 500, borderWidth: 5, borderColor: 'gray'
+                                    }}>
                                 <Image source={{ uri: `data:image/jpg;base64,${user.imageBase64}` }} style={{
-                                    width: 230, height: 230, borderRadius: 200, borderWidth: 5, borderColor: 'white'
+                                    width: 230,
+                                    height: 230,
+                                    borderRadius: 500,
+                                    borderWidth: 5,
+                                    borderColor: '#fff',
                                 }} />
+                                </View>
                                 : <ActivityIndicator size="large" color="#FFF" style={{
                                     width: 230, height: 230
                                 }}/>

@@ -1,8 +1,8 @@
-const  colorText = '#d3e0d5';
+const colorText = 'black';
 const fFamily = 'Abel';
-const bgColor = '#f5f5f5';
+const bgColor = 'black';
 const bgWhite = '#ededed';
-const bgHeaderColor = '#9a9a9a';
+const bgHeaderColor = 'black';
 
 export default {
     colorText,

@@ -1,8 +1,6 @@
 const CountryList=()=>{
 	return [
-		{"value":"AFG","label":"Afghanistan"},
-		{"value":"ALB","label":"Albania"},
-		{"value":"DZA","label":"Algeria"},
+		{"value":"ABL","label":"Abelandia"},
 		{"value":"ARG","label":"Argentina"},
 		{"value":"AND","label":"Andorra"},
 		{"value":"AZE","label":"Azerbaijan"},
@@ -13,7 +11,7 @@ const CountryList=()=>{
 		{"value":"CXR","label":"ChristmasIsland"},
 		{"value":"COL","label":"Colombia"},
 		{"value":"CUB","label":"Cuba"},
-		{"value":"CUW","label":"Curaçao"},
+		{"value":"CUW","label":"Curacao"},
 		{"value":"DMA","label":"Dominica"},
 		{"value":"GUM","label":"Guam"},
 		{"value":"GTM","label":"Guatemala"},
@@ -33,7 +31,7 @@ const CountryList=()=>{
 		{"value":"URY","label":"Uruguay"},
 		{"value":"ZMB","label":"Zambia"},
 		{"value":"ZWE","label":"Zimbabwe"},
-		{"value":"ALA","label":"ÅlandIslands"}
+		{"value":"ALA","label":"AlandIslands"}
 	];
 }
 
