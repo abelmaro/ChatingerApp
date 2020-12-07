@@ -19,7 +19,8 @@ const Login = (props) => {
                     snapshot.forEach(async (subSnapshot) => {
                         await AsyncStorage.setItem('@user_info', JSON.stringify(subSnapshot));
                         await AsyncStorage.getItem('@user_info').then(user_info => {
-                            navigation.navigate('Messages', user_info);
+                            var stringify = JSON.stringify(user_info);
+                            navigation.navigate('Messages', JSON.parse(stringify));
                         });
                     });
                 }).catch(error => console.log(error));
@@ -40,7 +41,8 @@ const Login = (props) => {
                         snapshot.forEach(async (subSnapshot) => {
                             await AsyncStorage.setItem('@user_info', JSON.stringify(subSnapshot));
                             await AsyncStorage.getItem('@user_info').then(user_info => {
-                                navigation.navigate('Messages', user_info);
+                                var stringify = JSON.stringify(user_info);
+                                navigation.navigate('Messages', JSON.parse(stringify));
                             });
                         });
                     });

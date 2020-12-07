@@ -50,8 +50,7 @@ const Messages = (navigation) => {
             unsuscribe();
             AppState.removeEventListener('change', (res) => _handleAppStateChange(res));
         }
-    }, [firebase]);
-
+    }, [firebase, user]);
 
     const _handleAppStateChange = (nextAppState) => {
         firebase.database().ref('users').orderByChild('userId').equalTo(firebase.auth().currentUser.uid).once('value')

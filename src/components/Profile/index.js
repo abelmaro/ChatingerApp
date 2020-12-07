@@ -22,6 +22,9 @@ const Profile = (props) => {
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
+        setColorC(user.colorChat);
+        setCountry(user.country);
+        setGender(user.gender);
         return () => {}
     }, []);
 
@@ -58,26 +61,31 @@ const Profile = (props) => {
     }
 
     const updateStorageValue = async (value, property) => {
+        var newData = null;
         await AsyncStorage.getItem("@user_info")
-            .then(async (data) => {
+            .then((data) => {
                 data = JSON.parse(data);
+                const { imageBase64, ...arr } = data;
+                console.log(value,property);
                 data[property] = value;
+                newData = data;
                 switch (property) {
                     case "colorChat":
                         setColorC(value);
-                        saveSelected(value, "colorChat")
+                        saveSelected(value, "colorChat");
                         return;
                     case "country":
                         setCountry(value);
-                        saveSelected(value, "country")
+                        saveSelected(value, "country");
                         return;
                     case "gender":
                         setGender(value);
-                        saveSelected(value, "gender")
+                        saveSelected(value, "gender");
                         return;
                     default:
                 }
-                await AsyncStorage.mergeItem('@user_info', JSON.stringify(data));
+            }).then(async() => {
+                await AsyncStorage.mergeItem('@user_info', JSON.stringify(newData));
             }).done();
     }
 

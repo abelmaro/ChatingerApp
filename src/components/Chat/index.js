@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, ImageBackground, TextInput, ScrollView, ActivityIndicator, Modal, TouchableHighlight, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, ImageBackground, TextInput, ScrollView, ActivityIndicator, Modal, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'; 
 import { Ionicons } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import BackgroundImage from '../../../assets/backgroundChatWhite.jpg'
 import * as firebase from 'firebase'
 import 'firebase/database'
 import 'firebase/firebase-database'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const generateId = () => {
     return Date.now() + Math.random();
@@ -54,21 +55,30 @@ const Chat = (navigation) => {
     if (navigation.route.params == null) {
         navigationDraw.navigate('Login');
     } else {
-        const contactInfo = navigation.route.params.item;
-        const currentUser = navigation.route.params.currentUser;
         const messages = [];
+        const contactInfo = navigation.route.params.item;
+        const [currentUser, setCurrentUser] = useState([]);
         const [mes, setMes] = useState(messages);
         const [value, onChangeText] = useState('');
         const scrollViewRef = useRef();
         const [messageInfo, setMessageInfo] = useState({});
         const [modalVisible, setModalVisible] = useState(false);
 
+        useEffect(() => {
+            const getUser = async () => {
+                await AsyncStorage.getItem('@user_info').then(user_info => {
+                    setCurrentUser(JSON.parse(user_info));
+                })
+            }
+            getUser();
+        }, []);
+
         var numberChat = contactInfo.numberChat + currentUser.numberChat;
         var colorChat = currentUser ? currentUser.colorChat : 'white';
-        var messagesFetch = firebase.database().ref("conversations").orderByChild('numberChat').equalTo(numberChat);
+        var messagesFetch = firebase.database().ref("conversations").orderByChild('numberChat').equalTo(contactInfo.numberChat + navigation.route.params.currentUser.numberChat);
 
         const Message = (props) => {
-            const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: currentUser.colorChat == "#000000" ? 'white' : currentUser.colorChat }
+            const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: colorChat == "#000000" ? 'white' : colorChat }
                 : { alignSelf: 'flex-start', backgroundColor: contactInfo.colorChat == "#000000" ? 'white' : contactInfo.colorChat }
             return (
                 <TouchableWithoutFeedback /*onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}*/>
@@ -141,7 +151,7 @@ const Chat = (navigation) => {
                             }
                             onChangeText('')
                         }}>
-                            <Ionicons name="md-send" size={40} color={currentUser.colorChat} />
+                            <Ionicons name="md-send" size={40} color={colorChat} />
                         </TouchableWithoutFeedback>
                     </View>
                 </ImageBackground>
