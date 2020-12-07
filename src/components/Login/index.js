@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as firebase from 'firebase';
 import 'firebase/database'
 import 'firebase/firebase-database'
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Login = (props) => {
     const navigation = useNavigation();
@@ -32,11 +33,11 @@ const Login = (props) => {
     });
     const handleLogin = () => {
         firebase.auth().signInWithEmailAndPassword(username, password);
-        firebase.auth().onAuthStateChanged(async(user) => {
+        firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
                 firebase.database().ref('users').orderByChild('userId').equalTo(user.uid).once('value')
                     .then((snapshot) => {
-                        snapshot.forEach(async(subSnapshot) => {
+                        snapshot.forEach(async (subSnapshot) => {
                             await AsyncStorage.setItem('@user_info', JSON.stringify(subSnapshot));
                             await AsyncStorage.getItem('@user_info').then(user_info => {
                                 navigation.navigate('Messages', user_info);
@@ -49,11 +50,23 @@ const Login = (props) => {
             }
         });
     }
-    return (
-        <View style={ styles.container }>
-            <Text style={ styles.welcome }>CHATINGER</Text>
-            <Image source={require('../../../assets/logo.png')} style={{width:150, height: 150}} />
-            <View>
+    return (<><>
+        <LinearGradient
+            colors={['#425a79', '#1c2c40', 'transparent']}
+            style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                height: 2000,
+                zIndex: 1
+            }}
+        />
+    </>
+        <View style={styles.container}>
+            <Text style={styles.welcome}>CHATINGER</Text>
+            <Image source={require('../../../assets/logo.png')} style={{ width: 150, height: 150 }} />
+            <View style={{ overflow: "hidden", paddingBottom: 5 }}>
                 <TextInput style={styles.input}
                     value={props.route.params != null ? props.route.params.username : username}
                     placeholder="Email"
@@ -67,18 +80,18 @@ const Login = (props) => {
                     secureTextEntry
                     placeholderTextColor="#9a9a9a" >
                 </TextInput>
-                
             </View>
             <View>
-                <TouchableOpacity style={styles.btnLogin} onPress={() => { handleLogin() }}>
+                <TouchableOpacity style={styles.btnNext} onPress={() => { handleLogin() }}>
                     <Text style={styles.textoEliminar}>Sign in</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.btnRegister} onPress={() => { navigation.navigate('SignUp')} }>
+                <TouchableOpacity style={styles.btnNext} onPress={() => { navigation.navigate('SignUp') }}>
                     <Text style={styles.textoEliminar}>Sign up</Text>
                 </TouchableOpacity>
             </View>
         </View>
-        );
+    </>
+    );
 };
 
 export default Login;

@@ -4,9 +4,10 @@
     "\\src",
     "\\src\\components",
     "\\src\\components\\Messages",
+    "\\src\\components\\SignUp",
     "\\src\\utils",
     "\\src\\utils\\mainCss"
   ],
-  "SelectedNode": "\\src\\components\\Messages\\index.js",
+  "SelectedNode": "\\src\\utils\\countryList.js",
   "PreviewInSolutionExplorer": false
 }

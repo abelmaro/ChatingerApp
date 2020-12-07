@@ -1,6 +1,6 @@
-const colorText = 'black';
+const colorText = '#12293e';
 const fFamily = 'Abel';
-const bgColor = 'black';
+const bgColor = '#12293e';
 const bgWhite = '#ededed';
 const bgHeaderColor = 'black';
 

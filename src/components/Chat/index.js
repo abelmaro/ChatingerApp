@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, ImageBackground, TextInput, ScrollView, ActivityIndicator, Modal, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, ImageBackground, TextInput, ScrollView, ActivityIndicator, Modal, TouchableHighlight, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
 import styles from './styles'
 import { AntDesign } from '@expo/vector-icons'; 
 import { Ionicons } from '@expo/vector-icons';
@@ -68,7 +68,7 @@ const Chat = (navigation) => {
         var messagesFetch = firebase.database().ref("conversations").orderByChild('numberChat').equalTo(numberChat);
 
         const Message = (props) => {
-            const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: colorChat == "#000000" ? 'white' : colorChat }
+            const addStyle = props.own == true ? { alignSelf: 'flex-end', backgroundColor: currentUser.colorChat == "#000000" ? 'white' : currentUser.colorChat }
                 : { alignSelf: 'flex-start', backgroundColor: contactInfo.colorChat == "#000000" ? 'white' : contactInfo.colorChat }
             return (
                 <TouchableWithoutFeedback /*onLongPress={() => { setModalVisible(true); setMessageInfo(props); }}*/>
@@ -141,7 +141,7 @@ const Chat = (navigation) => {
                             }
                             onChangeText('')
                         }}>
-                            <Ionicons name="md-send" size={40} color={colorChat} />
+                            <Ionicons name="md-send" size={40} color={currentUser.colorChat} />
                         </TouchableWithoutFeedback>
                     </View>
                 </ImageBackground>

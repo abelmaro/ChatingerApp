@@ -51,17 +51,17 @@ const Messages = (navigation) => {
             AppState.removeEventListener('change', (res) => _handleAppStateChange(res));
         }
     }, [firebase]);
- 
+
 
     const _handleAppStateChange = (nextAppState) => {
-           firebase.database().ref('users').orderByChild('userId').equalTo(firebase.auth().currentUser.uid).once('value')
-        .then((snapshot) => {
-            snapshot.forEach((subSnapshot) => {
-                firebase.database().ref(`users/${subSnapshot.key}`).child('status').set(nextAppState);
+        firebase.database().ref('users').orderByChild('userId').equalTo(firebase.auth().currentUser.uid).once('value')
+            .then((snapshot) => {
+                snapshot.forEach((subSnapshot) => {
+                    firebase.database().ref(`users/${subSnapshot.key}`).child('status').set(nextAppState);
+                });
             });
-        });
     };
-    
+
 
     async function getCurrentUser() {
         const jsonValue = await AsyncStorage.getItem('@user_info');
@@ -94,9 +94,9 @@ const Messages = (navigation) => {
                 navigationA.navigate("Chat", { item: props.item, currentUser: user });
             }}>
                 <ListItem bottomDivider key={props.setKey}>
-                    <Badge status={props.item.status == "active" ? "success" : "error"} containerStyle={{ position: "absolute", top: 20, left: 85, zIndex: 1 }} 
-                    badgeStyle={{ width: 15, height: 15, borderRadius: 200 }} />
-                    <ContactImage userId={props.item.userId} image={props.item.imageBase64 } styles={{ width: 60, height: 60, borderRadius:500}} />
+                    <Badge status={props.item.status == "active" ? "success" : "error"} containerStyle={{ position: "absolute", top: 20, left: 85, zIndex: 1 }}
+                        badgeStyle={{ width: 15, height: 15, borderRadius: 200 }} />
+                    <ContactImage userId={props.item.userId} image={props.item.imageBase64} styles={{ width: 60, height: 60, borderRadius: 500 }} />
                     <ListItem.Content>
                         <ListItem.Title style={styles.titleItem}>{capitalizeFirstLetter(props.item.userName)}</ListItem.Title>
                         <ListItem.Subtitle style={styles.subtitleItem}>Send a message</ListItem.Subtitle>
@@ -113,7 +113,7 @@ const Messages = (navigation) => {
                 <TouchableWithoutFeedback onPress={() => {
                     navigationA.dispatch(DrawerActions.openDrawer());
                 }}>
-                    <SimpleLineIcons name="menu" size={24} style={ styles.icon } />
+                    <SimpleLineIcons name="menu" size={24} style={styles.icon} />
                 </TouchableWithoutFeedback>
                 <Text style={styles.appText}>
                     Chatinger
@@ -138,12 +138,14 @@ const Messages = (navigation) => {
             </View>
             <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 {
-                    loading ? <></> : 
-                    snapshots.map(item => (
-                            item.userId != user.userId ?
-                            <ContactChat item={item} setKey={item.userId} />
-                                : <></>
-                        ))
+                    user != null ?
+                        loading ? <></> :
+                            snapshots.map(item => (
+                                item.userId != user.userId ?
+                                    <ContactChat item={item} setKey={item.userId} />
+                                    : <></>
+                            ))
+                        : <></>
                 }
             </ScrollView>
         </View>
